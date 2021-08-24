@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
@@ -11,10 +12,12 @@ namespace Tilia.Pay
 {
     public class Tilia : MonoBehaviour
     {
+        public static readonly string Version = "0.9.1";
+
         public bool StagingEnvironment = true;
 
-        public string ClientID = "5dd5425c-c611-4717-9c93-2e5af2bd06c4";
-        public string ClientSecret = "67c0f38e-7b50-4db4-bfb4-2c8f94545396";
+        public string ClientID;
+        public string ClientSecret;
 
         public string StagingURI = "staging.tilia-inc.com";
         public string ProductionURI = "tilia-inc.com";
@@ -136,7 +139,7 @@ namespace Tilia.Pay
                 }
                 catch (JsonReaderException ex)
                 {
-                    LogError("Payload not in JSON format.");
+                    LogError("Payload not in JSON format: " + ex.Message);
                 }
             }
         }
@@ -601,6 +604,13 @@ namespace Tilia.Pay
                 //LogInfo("Using authtoken: " + authToken.type + " " + authToken.token);
                 webRequest.SetRequestHeader("Authorization", authToken.TokenType + " " + authToken.AccessToken);
             }
+
+            // Custom Tilia headers
+            webRequest.SetRequestHeader("X-Tilia-Unity-SDK-Version", Version);
+            webRequest.SetRequestHeader("X-Tilia-Unity-Version", Application.unityVersion);
+            webRequest.SetRequestHeader("X-Tilia-Unity-Platform", Application.platform.ToString());
+            webRequest.SetRequestHeader("X-Tilia-Unity-Product-Name", Application.productName);
+            webRequest.SetRequestHeader("X-Tilia-Unity-Product-Version", Application.version);
 
             yield return webRequest.SendWebRequest();
 

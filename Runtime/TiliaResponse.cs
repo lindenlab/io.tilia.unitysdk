@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -62,7 +63,7 @@ namespace Tilia.Pay
 
             if (!Tilia.TokenIsNull(json["web_response_code"]))
             {
-                ResponseWebCode = Int32.Parse(json["web_response_code"].ToString());
+                ResponseWebCode = Int32.Parse(json["web_response_code"].ToString(), CultureInfo.InvariantCulture);
             }
 
             ResponseStatus = Tilia.StringOrNull(json["status"]);
@@ -145,7 +146,7 @@ namespace Tilia.Pay
             //base.Import(json);
             AccessToken = Tilia.StringOrNull(json["access_token"]);
             TokenType = Tilia.StringOrNull(json["token_type"]);
-            ExpiresIn = Int32.Parse(json["expires_in"].ToString());
+            ExpiresIn = Int32.Parse(json["expires_in"].ToString(), CultureInfo.InvariantCulture);
             Scope = Tilia.StringOrNull(json["scope"]);
             Created = DateTime.Now;
         }
@@ -213,12 +214,12 @@ namespace Tilia.Pay
 
                 if (!Tilia.TokenIsNull(import["amount"]))
                 {
-                    Amount = Int32.Parse(import["amount"].ToString());
+                    Amount = Int32.Parse(import["amount"].ToString(), CultureInfo.InvariantCulture);
                 }
 
                 if (!Tilia.TokenIsNull(import["authorized_amount"]))
                 {
-                    AuthorizedAmount = Int32.Parse(import["authorized_amount"].ToString());
+                    AuthorizedAmount = Int32.Parse(import["authorized_amount"].ToString(), CultureInfo.InvariantCulture);
                 }
 
                 if (!Tilia.TokenIsNull(import["SubItems"]))
@@ -264,7 +265,7 @@ namespace Tilia.Pay
                 {
                     Summary = new TiliaInvoiceSummary()
                     {
-                        TotalAmount = Int32.Parse(payload["total_amount"].ToString()),
+                        TotalAmount = Int32.Parse(payload["total_amount"].ToString(), CultureInfo.InvariantCulture),
                         Currency = Tilia.StringOrNull(payload["currency"]),
                         DisplayAmount = Tilia.StringOrNull(payload["display_amount"])
                     };
@@ -384,7 +385,7 @@ namespace Tilia.Pay
 
             if (!Tilia.TokenIsNull(import["amount"]))
             {
-                Amount = Int32.Parse(import["amount"].ToString());
+                Amount = Int32.Parse(import["amount"].ToString(), CultureInfo.InvariantCulture);
             }
 
             if (!Tilia.TokenIsNull(import["SubItems"]))
@@ -444,7 +445,7 @@ namespace Tilia.Pay
 
             if (!Tilia.TokenIsNull(import["amount"]))
             {
-                Amount = Int32.Parse(import["amount"].ToString());
+                Amount = Int32.Parse(import["amount"].ToString(), CultureInfo.InvariantCulture);
             }
         }
     }
@@ -716,7 +717,7 @@ namespace Tilia.Pay
 
                 if (!Tilia.TokenIsNull(import["wallet_balance"]))
                 {
-                    WalletBalance = Int32.Parse(import["wallet_balance"].ToString());
+                    WalletBalance = Int32.Parse(import["wallet_balance"].ToString(), CultureInfo.InvariantCulture);
                 }
 
                 if (!Tilia.TokenIsNull(import["created"]))
@@ -892,8 +893,8 @@ namespace Tilia.Pay
                         DestinationPaymentMethodID = Tilia.StringOrNull(payload["credit"]["destination_payment_method_id"]),
                         Currency = Tilia.StringOrNull(payload["credit"]["currency"]),
                         Status = Tilia.StringOrNull(payload["credit"]["status"]),
-                        Amount = Int32.Parse(payload["credit"]["amount"].ToString()),
-                        FeeAmount = !Tilia.TokenIsNull(payload["credit"]["fee_amount"]) ? Int32.Parse(payload["credit"]["fee_amount"].ToString()) : 0
+                        Amount = Int32.Parse(payload["credit"]["amount"].ToString(), CultureInfo.InvariantCulture),
+                        FeeAmount = !Tilia.TokenIsNull(payload["credit"]["fee_amount"]) ? Int32.Parse(payload["credit"]["fee_amount"].ToString(), CultureInfo.InvariantCulture) : 0
                     };
                 }
 
