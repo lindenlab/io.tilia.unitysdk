@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading;
 using MessageLibrary;
 using UnityEngine;
+using UnityEngine.Networking;
 using Debug = UnityEngine.Debug;
 
 namespace SimpleWebBrowser
@@ -89,7 +90,7 @@ namespace SimpleWebBrowser
             return path.Replace("localhost", _localhostname);
         }
         public IEnumerator InitPlugin(int width, int height, string sharedfilename,string initialURL,bool enableWebRTC,bool enableGPU) {
-            _localhostname = WWW.EscapeURL(sharedfilename);
+            _localhostname = UnityWebRequest.EscapeURL(sharedfilename);
             initialURL = RedirectLocalhost(initialURL);
             _pollthread=new Thread(BackgroundPollThread);
             _pollthread.Start();
@@ -98,10 +99,10 @@ namespace SimpleWebBrowser
             //Also change the path in deployment script.
             StreamingAssetPath = Application.streamingAssetsPath;
 #if UNITY_EDITOR_64
-         string PluginServerPath = Path.Combine(Application.dataPath,@"SimpleWebBrowser\PluginServer\x64");
+         string PluginServerPath = Path.Combine(Application.dataPath,@"Tilia\Runtime\3rd Party\SimpleWebBrowser\PluginServer\x64");
 #else
 #if UNITY_EDITOR_32
-            string PluginServerPath = Application.dataPath + @"\SimpleWebBrowser\PluginServer\x86";
+            string PluginServerPath = Application.dataPath + @"\Tilia\Runtime\3rd Party\SimpleWebBrowser\PluginServer\x86";
 #else
         //HACK
         string AssemblyPath=System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -169,7 +170,7 @@ namespace SimpleWebBrowser
                     _pluginProcess.Start();
                     Initialized = false;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //log the file
                     Debug.Log("FAILED TO START SERVER FROM:" + PluginServerPath + @"\SharedPluginServer.exe");
@@ -198,7 +199,7 @@ namespace SimpleWebBrowser
                     _connected = true;
                     
                 }
-                catch (Exception e) {
+                catch (Exception) {
                     if (_inCommServer != null) _inCommServer.Dispose();
                     if (_outCommServer != null) _outCommServer.Dispose();
                     _pluginProcess.Dispose();
@@ -519,7 +520,7 @@ namespace SimpleWebBrowser
                     }
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Debug.Log("Error reading from socket,waiting for plugin server to start...");
                 }
@@ -564,9 +565,9 @@ namespace SimpleWebBrowser
                         BrowserTexture.Apply();
                     }
                     _mainTexArray.ReleaseReadLock();
-                }
-                else {
-                    int i = 0;
+                //}
+                //else {
+                //    int i = 0;
                 }
             }
         }

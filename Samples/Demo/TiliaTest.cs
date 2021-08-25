@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,37 +21,88 @@ public class TiliaTest : MonoBehaviour
     public InputField PurchasePrice;
     public InputField PurchaseProduct;
     public InputField PurchaseAccount;
+    public InputField PurchasePSP;
+    public InputField PurchaseInvoice;
 
     public InputField RedirectURLInput;
 
-    public void MakePurchase()
+    public void CreateInvoice()
     {
-        var price = Int32.Parse(PurchasePrice.text);
+        var price = Int32.Parse(PurchasePrice.text, CultureInfo.InvariantCulture);
         var product = PurchaseProduct.text;
         var user = PurchaseAccount.text;
         Debug.Log("Attempting purchase of " + product + " by " + user + " for $" + price + "):");
-        //new string[] { "user_info", "read_payment_method", "write_payment_method", "read_kyc", "verify_kyc" },
-        //var newPurchase = new TiliaPurchase()
-        //{
-        //    account = user,
-        //    product = product,
-        //    price = price,
-        //    currency = "USD",
-        //    description = "A cool product you really need.",
-        //    reference = "cool_product_ref"
-        //};
-        //TiliaPay.UserPurchase(newPurchase,
-        //    (json) => {
-        //        if (json["status"].ToString() == "Success")
-        //        {
-        //            var payload = json["payload"];
-        //            Debug.Log("Purchase complete.");
-        //        }
-        //        else
-        //        {
-        //            Debug.Log("Something went wrong making the purchase.");
-        //        }
-        //    });
+        var newItem = new TiliaLineItem() {
+            ProductSKU = product,
+            Description = "A cool product you really need.",
+            Amount = price,
+            Currency = "USD",
+            TransactionType = "user_to_integrator",
+            ReferenceType = "integrator_product_id",
+            ReferenceID = product
+        };
+        var newPurchase = new TiliaNewInvoice()
+        {
+            AccountID = user,
+            ReferenceType = "product_purchase_id",
+            ReferenceID = "invoice_" + product,
+            Description = "A great purchase full of cool stuff."
+        };
+        newPurchase.LineItems.Add(newItem);
+        var newPayment = new TiliaPayment()
+        {
+            Amount = 0,
+            ID = PurchasePSP.text
+        };
+        newPurchase.PaymentMethods.Add(newPayment);
+        TiliaPay.CreateInvoice(newPurchase,
+            (value) =>
+            {
+                if (value.Success)
+                {
+                    PurchaseInvoice.text = value.ID;
+                    Debug.Log("Invoice created.");
+                }
+                else
+                {
+                    Debug.Log("Something went wrong creating the invoice.");
+                }
+            });
+    }
+
+    public void PayInvoice()
+    {
+        var invoiceID = PurchaseInvoice.text;
+        TiliaPay.PayInvoice(invoiceID,
+            (value) =>
+            {
+                if (value.Success)
+                {
+                    Debug.Log("Invoice paid.");
+                }
+                else
+                {
+                    Debug.Log("Something went wrong paying the invoice.");
+                }
+            });
+    }
+
+    public void GetInvoice()
+    {
+        var invoiceID = PurchaseInvoice.text;
+        TiliaPay.GetInvoice(invoiceID,
+            (value) =>
+            {
+                if (value.Success)
+                {
+                    Debug.Log("Invoice found.");
+                    Debug.Log(JsonConvert.SerializeObject(value, Formatting.Indented));
+                }
+                else
+                {
+                    Debug.Log("Something went wrong getting the invoice.");
+                }
+            });
     }
 
     public void CopyAccountToPurchase()
@@ -258,7 +310,8 @@ public class TiliaTest : MonoBehaviour
                         {
                             if (widget.Completed)
                             {
-                                Debug.Log("Purchase process completed: " + widget.PSPReference);
+                                PurchasePSP.text = widget.ID;
+                                Debug.Log("Purchase process completed: " + widget.ID);
                             }
                             else
                             {
@@ -288,7 +341,8 @@ public class TiliaTest : MonoBehaviour
                         {
                             if (widget.Completed)
                             {
-                                Debug.Log("Payout process completed: " + widget.PSPReference);
+                                PurchasePSP.text = widget.ID;
+                                Debug.Log("Payout process completed: " + widget.ID);
                             }
                             else
                             {

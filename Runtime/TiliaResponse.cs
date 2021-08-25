@@ -63,7 +63,7 @@ namespace Tilia.Pay
 
             if (!Tilia.TokenIsNull(json["web_response_code"]))
             {
-                ResponseWebCode = Int32.Parse(json["web_response_code"].ToString(), CultureInfo.InvariantCulture);
+                ResponseWebCode = json["web_response_code"].Value<int>();
             }
 
             ResponseStatus = Tilia.StringOrNull(json["status"]);
@@ -146,7 +146,7 @@ namespace Tilia.Pay
             //base.Import(json);
             AccessToken = Tilia.StringOrNull(json["access_token"]);
             TokenType = Tilia.StringOrNull(json["token_type"]);
-            ExpiresIn = Int32.Parse(json["expires_in"].ToString(), CultureInfo.InvariantCulture);
+            ExpiresIn = json["expires_in"].Value<int>();
             Scope = Tilia.StringOrNull(json["scope"]);
             Created = DateTime.Now;
         }
@@ -176,8 +176,6 @@ namespace Tilia.Pay
         public string FailureReason;
         public DateTime Created;
         public DateTime Updated;
-
-        // Maybe Invoice SubItems here. Might be vestigial.
 
         public List<TiliaLineItem> LineItems;
 
@@ -214,20 +212,20 @@ namespace Tilia.Pay
 
                 if (!Tilia.TokenIsNull(import["amount"]))
                 {
-                    Amount = Int32.Parse(import["amount"].ToString(), CultureInfo.InvariantCulture);
+                    Amount = import["amount"].Value<int>();
                 }
 
                 if (!Tilia.TokenIsNull(import["authorized_amount"]))
                 {
-                    AuthorizedAmount = Int32.Parse(import["authorized_amount"].ToString(), CultureInfo.InvariantCulture);
+                    AuthorizedAmount = import["authorized_amount"].Value<int>();
                 }
 
-                if (!Tilia.TokenIsNull(import["SubItems"]))
+                if (!Tilia.TokenIsNull(import["subitems"]))
                 {
                     SubItems = new List<TiliaSubItem>();
-                    foreach (var item in import["SubItems"])
+                    foreach (JProperty item in import["subitems"])
                     {
-                        SubItems.Add(new TiliaSubItem(item));
+                        SubItems.Add(new TiliaSubItem(item.Value));
                     }
                 }
             }
@@ -265,9 +263,9 @@ namespace Tilia.Pay
                 {
                     Summary = new TiliaInvoiceSummary()
                     {
-                        TotalAmount = Int32.Parse(payload["total_amount"].ToString(), CultureInfo.InvariantCulture),
-                        Currency = Tilia.StringOrNull(payload["currency"]),
-                        DisplayAmount = Tilia.StringOrNull(payload["display_amount"])
+                        TotalAmount = payload["summary"]["total_amount"].Value<int>(),
+                        Currency = Tilia.StringOrNull(payload["summary"]["currency"]),
+                        DisplayAmount = Tilia.StringOrNull(payload["summary"]["display_amount"])
                     };
                 }
 
@@ -281,69 +279,33 @@ namespace Tilia.Pay
                     Updated = DateTime.Parse(payload["updated"].ToString());
                 }
 
-                if (!Tilia.TokenIsNull(payload["LineItems"]))
+                if (!Tilia.TokenIsNull(payload["line_items"]))
                 {
                     LineItems = new List<TiliaLineItem>();
-                    foreach (var item in payload["LineItems"])
+                    foreach (JProperty item in payload["line_items"])
                     {
-                        LineItems.Add(new TiliaLineItem(item));
+                        LineItems.Add(new TiliaLineItem(item.Value));
                     }
                 }
 
-                if (!Tilia.TokenIsNull(payload["PaymentMethods"]))
+                if (!Tilia.TokenIsNull(payload["payment_methods"]))
                 {
                     PaymentMethods = new List<TiliaPaymentMethod>();
-                    foreach (var method in payload["PaymentMethods"])
+                    foreach (JProperty method in payload["payment_methods"])
                     {
-                        PaymentMethods.Add(new TiliaPaymentMethod(method));
+                        PaymentMethods.Add(new TiliaPaymentMethod(method.Value));
                     }
                 }
 
-                if (!Tilia.TokenIsNull(payload["SubItems"]))
+                if (!Tilia.TokenIsNull(payload["subitems"]))
                 {
                     SubItems = new List<TiliaSubItem>();
-                    foreach (var item in payload["SubItems"])
+                    foreach (JProperty item in payload["subitems"])
                     {
-                        SubItems.Add(new TiliaSubItem(item));
+                        SubItems.Add(new TiliaSubItem(item.Value));
                     }
                 }
             }
-        }
-
-        internal JObject Export()
-        {
-            var paymentMethods = new JArray();
-            foreach (var method in PaymentMethods)
-            {
-                paymentMethods.Add(new JObject(
-                    new JProperty("payment_method_id", method.ID),
-                    new JProperty("amount", method.Amount)
-                ));
-            }
-            var lineItems = new JArray();
-            foreach (var line in LineItems)
-            {
-                lineItems.Add(new JObject(
-                    new JProperty("amount", line.Amount),
-                    new JProperty("currency", line.Currency),
-                    new JProperty("description", line.Description),
-                    new JProperty("metadata", line.MetaData),
-                    new JProperty("product_sku", line.ProductSKU),
-                    new JProperty("transaction_type", line.TransactionType),
-                    new JProperty("reference_type", line.ReferenceType),
-                    new JProperty("reference_id", line.ReferenceID)
-                ));
-            }
-            var jsonData = new JObject(
-                new JProperty("account_id", AccountID),
-                new JProperty("reference_type", ReferenceType),
-                new JProperty("reference_id", ReferenceID),
-                new JProperty("description", Description),
-                new JProperty("metadata", MetaData),
-                new JProperty("payment_methods", paymentMethods),
-                new JProperty("line_items", lineItems)
-            );
-            return jsonData;
         }
     }
 
@@ -385,15 +347,15 @@ namespace Tilia.Pay
 
             if (!Tilia.TokenIsNull(import["amount"]))
             {
-                Amount = Int32.Parse(import["amount"].ToString(), CultureInfo.InvariantCulture);
+                Amount = import["amount"].Value<int>();
             }
 
-            if (!Tilia.TokenIsNull(import["SubItems"]))
+            if (!Tilia.TokenIsNull(import["subitems"]))
             {
                 SubItems = new List<TiliaSubItem>();
-                foreach (var item in import["SubItems"])
+                foreach (JProperty item in import["subitems"])
                 {
-                    SubItems.Add(new TiliaSubItem(item));
+                    SubItems.Add(new TiliaSubItem(item.Value));
                 }
             }
         }
@@ -445,41 +407,8 @@ namespace Tilia.Pay
 
             if (!Tilia.TokenIsNull(import["amount"]))
             {
-                Amount = Int32.Parse(import["amount"].ToString(), CultureInfo.InvariantCulture);
+                Amount = import["amount"].Value<int>();
             }
-        }
-    }
-
-    [Serializable]
-    public class TiliaNewUser
-    {
-        public string UserName;
-        public string Password;
-        public string Email;
-        public bool? TOS;
-        public string MetaData;
-        public string TrackingID;
-
-        internal JObject Export()
-        {
-            var jsonData = new JObject(
-                new JProperty("username", UserName),
-                new JProperty("password", Password),
-                new JProperty("email", Email)
-            );
-            if (TOS != null)
-            {
-                jsonData.Add(new JProperty("tos", TOS));
-            }
-            if (!String.IsNullOrEmpty(MetaData))
-            {
-                jsonData.Add(new JProperty("metadata", MetaData));
-            }
-            if (!String.IsNullOrEmpty(TrackingID))
-            {
-                jsonData.Add(new JProperty("tracking_id", TrackingID));
-            }
-            return jsonData;
         }
     }
 
@@ -717,7 +646,7 @@ namespace Tilia.Pay
 
                 if (!Tilia.TokenIsNull(import["wallet_balance"]))
                 {
-                    WalletBalance = Int32.Parse(import["wallet_balance"].ToString(), CultureInfo.InvariantCulture);
+                    WalletBalance = import["wallet_balance"].Value<int>();
                 }
 
                 if (!Tilia.TokenIsNull(import["created"]))
@@ -893,32 +822,12 @@ namespace Tilia.Pay
                         DestinationPaymentMethodID = Tilia.StringOrNull(payload["credit"]["destination_payment_method_id"]),
                         Currency = Tilia.StringOrNull(payload["credit"]["currency"]),
                         Status = Tilia.StringOrNull(payload["credit"]["status"]),
-                        Amount = Int32.Parse(payload["credit"]["amount"].ToString(), CultureInfo.InvariantCulture),
-                        FeeAmount = !Tilia.TokenIsNull(payload["credit"]["fee_amount"]) ? Int32.Parse(payload["credit"]["fee_amount"].ToString(), CultureInfo.InvariantCulture) : 0
+                        Amount = payload["credit"]["amount"].Value<int>(),
+                        FeeAmount = !Tilia.TokenIsNull(payload["credit"]["fee_amount"]) ? payload["credit"]["fee_amount"].Value<int>() : 0
                     };
                 }
 
             }
-        }
-    }
-
-    [Serializable]
-    public class TiliaNewPayout : TiliaResponse
-    {
-        public string SourcePaymentMethodID;
-        public string DestinationPaymentMethodID;
-        public int Amount;
-        public string Currency = "USD";
-
-        internal JObject Export()
-        {
-            var jsonData = new JObject(
-                new JProperty("source_payment_method_id", SourcePaymentMethodID),
-                new JProperty("destination_payment_method_id", DestinationPaymentMethodID),
-                new JProperty("amount", Amount),
-                new JProperty("currency", Currency)
-            );
-            return jsonData;
         }
     }
 

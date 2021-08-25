@@ -277,11 +277,9 @@ namespace SimpleWebBrowser {
                 _mainEngine.Shutdown();
         }
 
-
+        #pragma warning disable 67
         public event BrowserEngine.PageLoaded OnPageLoaded;
-
-        
-
+        #pragma warning restore 67
 
         #region JS Query events
 

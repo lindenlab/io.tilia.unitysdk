@@ -12,7 +12,7 @@ namespace Tilia.Pay
 {
     public class Tilia : MonoBehaviour
     {
-        public static readonly string Version = "0.9.1";
+        public static readonly string Version = "0.9.2";
 
         public bool StagingEnvironment = true;
 
@@ -105,7 +105,7 @@ namespace Tilia.Pay
                     WebBrowser2DComponent.OnJSQuery += OnJSQuery;
                     WebBrowser2DComponent.OnPageLoaded += OnPageLoaded;
                     // Testing in editor
-                    var IntegratorHTML = Application.dataPath + "/Tilia/TiliaPayIntegrator.html";
+                    var IntegratorHTML = Application.dataPath + "/Tilia/Runtime/Widget/TiliaPayIntegrator.html";
                     LogInfo("Defaulting to " + IntegratorHTML);
                     WebBrowser2DComponent.InitialURL = IntegratorHTML;
                     //WebBrowser2DComponent.Navigate(IntegratorHTML);
@@ -197,6 +197,11 @@ namespace Tilia.Pay
             }
         }
 
+        /// <summary>
+        /// Inititialize the web browser Tilia widget for the purchase flow.
+        /// </summary>
+        /// <param name="redirectURL">The URL returned by the RequestClientRedirectURL function.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and cancellation by user.</param>
         public void InitiatePurchaseWidget(string redirectURL, Action<TiliaWidgetPurchase> onComplete)
         {
             if (Status.Idle)
@@ -207,6 +212,11 @@ namespace Tilia.Pay
             }
         }
 
+        /// <summary>
+        /// Inititialize the web browser Tilia widget for the payout flow.
+        /// </summary>
+        /// <param name="redirectURL">The URL returned by the RequestClientRedirectURL function.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and cancellation by user.</param>
         public void InitiatePayoutWidget(string redirectURL, Action<TiliaWidgetPayout> onComplete)
         {
             if (Status.Idle)
@@ -217,6 +227,11 @@ namespace Tilia.Pay
             }
         }
 
+        /// <summary>
+        /// Inititialize the web browser Tilia widget for the KYC flow.
+        /// </summary>
+        /// <param name="redirectURL">The URL returned by the RequestClientRedirectURL function.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and cancellation by user.</param>
         public void InitiateKYCWidget(string redirectURL, Action<TiliaWidgetKYC> onComplete)
         {
             if (Status.Idle)
@@ -227,6 +242,11 @@ namespace Tilia.Pay
             }
         }
 
+        /// <summary>
+        /// Inititialize the web browser Tilia widget for the TOS flow.
+        /// </summary>
+        /// <param name="redirectURL">The URL returned by the RequestClientRedirectURL function.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and cancellation by user.</param>
         public void InitiateTOSWidget(string redirectURL, Action<TiliaWidgetTOS> onComplete)
         {
             if (Status.Idle)
@@ -240,6 +260,13 @@ namespace Tilia.Pay
         #endregion
 
         #region API Functions
+
+        /// <summary>
+        /// Create a new payout request.
+        /// </summary>
+        /// <param name="accountID">User account ID that the payout is being requested for.</param>
+        /// <param name="payout">Full payout details defined by a TiliaNewPayout object class.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
         private void CreatePayout(string accountID, TiliaNewPayout payout, Action<TiliaPayout> onComplete)
         {
             ValidateAndSend("", () => {
@@ -252,6 +279,12 @@ namespace Tilia.Pay
             });
         }
 
+        /// <summary>
+        /// Retrieve details about an existing payout request.
+        /// </summary>
+        /// <param name="accountID">User account ID that the payout was previously requested for.</param>
+        /// <param name="payoutID">The ID of payout request that you want details about.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
         public void GetPayout(string accountID, string payoutID, Action<TiliaPayout> onComplete)
         {
             ValidateAndSend("", () => {
@@ -263,6 +296,11 @@ namespace Tilia.Pay
             });
         }
 
+        /// <summary>
+        /// Get all payout requests associated with a specific user account.
+        /// </summary>
+        /// <param name="accountID">User account ID that you want payout information from.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
         public void GetPayouts(string accountID, Action<TiliaPayouts> onComplete)
         {
             ValidateAndSend("", () => {
@@ -274,6 +312,12 @@ namespace Tilia.Pay
             });
         }
 
+        /// <summary>
+        /// Cancel a previously created payout request.
+        /// </summary>
+        /// <param name="accountID">User account ID that the payout request is associated with.</param>
+        /// <param name="payoutID">The ID of payout request that you want to cancel.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
         public void CancelPayout(string accountID, string payoutID, Action<TiliaPayout> onComplete)
         {
             ValidateAndSend("", () => {
@@ -285,7 +329,12 @@ namespace Tilia.Pay
             });
         }
 
-        private void CreateEscrow(TiliaInvoice invoice, Action<TiliaEscrow> onComplete)
+        /// <summary>
+        /// Create a new escrow invoice. Invoice is not paid or committed automatically, this just creates it as an open invoice.
+        /// </summary>
+        /// <param name="invoice">All the necessary details for a new Escrow passed as a TiliaNewInvoice object.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
+        private void CreateEscrow(TiliaNewInvoice invoice, Action<TiliaEscrow> onComplete)
         {
             ValidateAndSend("", () => {
                 PerformWebPost(
@@ -297,6 +346,11 @@ namespace Tilia.Pay
             });
         }
 
+        /// <summary>
+        /// Pay a previously created escrow invoice.
+        /// </summary>
+        /// <param name="escrowID">The ID of a previously created escrow to pay.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
         public void PayEscrow(string escrowID, Action<TiliaEscrow> onComplete)
         {
             ValidateAndSend("", () => {
@@ -309,6 +363,11 @@ namespace Tilia.Pay
             });
         }
 
+        /// <summary>
+        /// Commit a previously created escrow invoice.
+        /// </summary>
+        /// <param name="escrowID">The ID of a previously created escrow to commit.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
         public void CommitEscrow(string escrowID, Action<TiliaEscrow> onComplete)
         {
             ValidateAndSend("", () => {
@@ -321,6 +380,11 @@ namespace Tilia.Pay
             });
         }
 
+        /// <summary>
+        /// Cancels a previously created escrow invoice.
+        /// </summary>
+        /// <param name="escrowID">The ID of a previously created escrow to cancel.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
         public void CancelEscrow(string escrowID, Action<TiliaEscrow> onComplete)
         {
             ValidateAndSend("", () => {
@@ -333,18 +397,28 @@ namespace Tilia.Pay
             });
         }
 
-        public void GetEscrow(string invoiceID, Action<TiliaEscrow> onComplete)
+        /// <summary>
+        /// Retrieve details about a previously created escrow invoice.
+        /// </summary>
+        /// <param name="escrowID">The ID of a previously created escrow to retrieve.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
+        public void GetEscrow(string escrowID, Action<TiliaEscrow> onComplete)
         {
             ValidateAndSend("", () => {
                 PerformWebGet(
-                    MakeRequestURI("invoicing", "escrow/" + UnityWebRequest.EscapeURL(invoiceID), "v2"),
+                    MakeRequestURI("invoicing", "escrow/" + UnityWebRequest.EscapeURL(escrowID), "v2"),
                     (value) => { onComplete(new TiliaEscrow(value)); },
                     AuthTokenForScope("")
                );
             });
         }
 
-        private void CreateInvoice(TiliaInvoice invoice, Action<TiliaInvoice> onComplete)
+        /// <summary>
+        /// Create a new standard purchase invoice. Invoice is not paid automatically, this just creates it as an open invoice.
+        /// </summary>
+        /// <param name="invoice">All the necessary details for a new invoice passed as a TiliaNewInvoice object.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
+        public void CreateInvoice(TiliaNewInvoice invoice, Action<TiliaInvoice> onComplete)
         {
             ValidateAndSend("", () => {
                 PerformWebPost(
@@ -356,6 +430,11 @@ namespace Tilia.Pay
             });
         }
 
+        /// <summary>
+        /// Pay a previously created purchase invoice.
+        /// </summary>
+        /// <param name="invoiceID">The ID of the previously created invoice you want to pay.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
         public void PayInvoice(string invoiceID, Action<TiliaInvoice> onComplete)
         {
             ValidateAndSend("", () => {
@@ -368,6 +447,11 @@ namespace Tilia.Pay
             });
         }
 
+        /// <summary>
+        /// Retrieve details about a previously created purchase invoice.
+        /// </summary>
+        /// <param name="invoiceID">The ID of the previously created invoice you want to retrieve.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
         public void GetInvoice(string invoiceID, Action<TiliaInvoice> onComplete)
         {
             ValidateAndSend("", () => {
@@ -379,7 +463,13 @@ namespace Tilia.Pay
             });
         }
 
-        public void RequestClientRedirectURL(string accountID, string[] scopes, Action<TiliaUserAuth> onClientRedirect)
+        /// <summary>
+        /// Request a client redirect URL for use in the widget flow process.
+        /// </summary>
+        /// <param name="accountID">The ID of the user account which will be accessing the widget flow.</param>
+        /// <param name="scopes">An array of scope permissions that need to be granted for the desired widget flow.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
+        public void RequestClientRedirectURL(string accountID, string[] scopes, Action<TiliaUserAuth> onComplete)
         {
             ValidateAndSend("", () => {
                 var jsonData = new JObject(
@@ -390,13 +480,18 @@ namespace Tilia.Pay
                 PerformWebPost(
                     MakeRequestURI("auth", "authorize/user"),
                     jsonData.ToString(Newtonsoft.Json.Formatting.None),
-                    (value) => { onClientRedirect(new TiliaUserAuth(value)); },
+                    (value) => { onComplete(new TiliaUserAuth(value)); },
                     AuthTokenForScope("")
                );
             });
         }
 
-        public void RegisterUser(TiliaNewUser user, Action<TiliaRegistration> onRegister)
+        /// <summary>
+        /// Create a new user account.
+        /// </summary>
+        /// <param name="user">All details necessary to create a new account passed in as a TiliaNewUser object.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
+        public void RegisterUser(TiliaNewUser user, Action<TiliaRegistration> onComplete)
         {
             ValidateAndSend("", () => {
                 PerformWebPost(
@@ -405,11 +500,11 @@ namespace Tilia.Pay
                     (value) => {
                         if (StringOrNull(value["status"]) == "Success" && !TokenIsNull(value["payload"]["registration_id"]))
                         {
-                            CompleteRegisterUser(value["payload"]["registration_id"].ToString(), onRegister);
+                            CompleteRegisterUser(value["payload"]["registration_id"].ToString(), onComplete);
                         }
                         else
                         {
-                            onRegister(new TiliaRegistration(value));
+                            onComplete(new TiliaRegistration(value));
                         }
                     },
                     AuthTokenForScope("")
@@ -417,59 +512,83 @@ namespace Tilia.Pay
             });
         }
 
-        // This should only be used by RegisterUser and should not be publicly accessible.
-        // We have converted this two-step process into a one-step process per Tilia's request.
-        private void CompleteRegisterUser(string registrationID, Action<TiliaRegistration> onCompleteRegister)
+        /// <summary>
+        /// This should only be used by RegisterUser and should not be publicly accessible.
+        /// We have converted this two-step process into a one-step process per Tilia's request.
+        /// </summary>
+        /// <param name="registrationID">The registration ID returned by RegisterUser to complete a registration.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
+        private void CompleteRegisterUser(string registrationID, Action<TiliaRegistration> onComplete)
         {
             ValidateAndSend("", () => {
                 PerformWebPut(
                     MakeRequestURI("registration", "register/" + UnityWebRequest.EscapeURL(registrationID), "v2"),
                     registrationID,
-                    (value) => { onCompleteRegister(new TiliaRegistration(value)); },
+                    (value) => { onComplete(new TiliaRegistration(value)); },
                     AuthTokenForScope("")
                );
             });
         }
 
-        public void CheckKYC(string accountID, Action<TiliaKYC> onUserCheck)
+        /// <summary>
+        /// Create the KYC (Know Your Customer) status of a user account. In other words, have they filled in their contact information yet.
+        /// </summary>
+        /// <param name="accountID">The account ID of the user you want to check.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
+        public void CheckKYC(string accountID, Action<TiliaKYC> onComplete)
         {
             ValidateAndSend("", () => {
                 PerformWebGet(
                     MakeRequestURI("pii", "kyc/" + UnityWebRequest.EscapeURL(accountID), "v1"),
-                    (value) => { onUserCheck(new TiliaKYC(value)); },
+                    (value) => { onComplete(new TiliaKYC(value)); },
                     AuthTokenForScope("")
                );
             });
         }
 
-        public void GetPaymentMethods(string accountID, Action<TiliaPaymentMethods> onPaymentMethods)
+        /// <summary>
+        /// Retrieve a list of all known payment methods associated with a user account, including Tilia wallet balance.
+        /// </summary>
+        /// <param name="accountID">The account ID of the user you want to retrieve payment methods for.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
+        public void GetPaymentMethods(string accountID, Action<TiliaPaymentMethods> onComplete)
         {
             ValidateAndSend("", () => {
                 PerformWebGet(
                     MakeRequestURI("payments", UnityWebRequest.EscapeURL(accountID) + "/payment_methods"),
-                    (value) => { onPaymentMethods(new TiliaPaymentMethods(value)); },
+                    (value) => { onComplete(new TiliaPaymentMethods(value)); },
                     AuthTokenForScope("")
                );
             });
         }
 
-        public void GetUserInfo(string accountID, Action<TiliaUser> onUserInfo)
+        /// <summary>
+        /// Retrieve full user profile for a given account ID.
+        /// </summary>
+        /// <param name="accountID">The account ID of the user you want to retrieve.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
+        public void GetUserInfo(string accountID, Action<TiliaUser> onComplete)
         {
             ValidateAndSend("", () => {
                 PerformWebGet(
                     MakeRequestURI("accounts", UnityWebRequest.EscapeURL(accountID) + "/user-info", "v1"),
-                    (value) => { onUserInfo(new TiliaUser(value)); },
+                    (value) => { onComplete(new TiliaUser(value)); },
                     AuthTokenForScope("")
                );
             });
         }
 
-        public void SearchForUser(string username, Action<TiliaUser> onUserSearch)
+        /// <summary>
+        /// Retrieve full user profile for a given username.
+        /// </summary>
+        /// <param name="username">The username of the user you want to retrieve.</param>
+        /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
+        public void SearchForUser(string username, Action<TiliaUser> onComplete)
         {
             ValidateAndSend("", () => {
                 PerformWebGet(
                     MakeRequestURI("accounts", "user-info/search?username=" + UnityWebRequest.EscapeURL(username), "v1"),
-                    (value) => { onUserSearch(new TiliaUser(value)); },
+                    (value) => { onComplete(new TiliaUser(value)); },
                     AuthTokenForScope("")
                );
             });
@@ -618,7 +737,17 @@ namespace Tilia.Pay
             {
                 LogError("Web " + method + " (" + webRequest.responseCode + ") error: " + webRequest.error);
             }
-            if (!string.IsNullOrEmpty(webRequest.downloadHandler.text))
+            if (webRequest.responseCode == 500)
+            {
+                // Special handling for 500 server errors, since we won't get a payload back from these but
+                // we don't want to leave the client hanging with no response at all.
+                var json = new JObject(
+                    new JProperty("status", "Failed"),
+                    new JProperty("web_response_code", webRequest.responseCode)
+                );
+                onComplete(json);
+            }
+            else if (!string.IsNullOrEmpty(webRequest.downloadHandler.text))
             {
                 LogInfo("Web " + method + " (" + webRequest.responseCode + ") data: " + webRequest.downloadHandler.text);
                 try

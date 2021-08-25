@@ -1,6 +1,23 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.9.2] - 2021-08-25
+### Added
+ - Improved support for handling 500 server errors from API backend.
+ - Moved input classes to new TiliaInput.cs with abstract parent class.
+ - Added TiliaNewInvoice class for consistency with input classes being differentiated from output classes. (e.g. TiliaNewUser, TiliaNewPayout)
+ - Additional UI functionality for purchase flow testing on sample TiliaDemo scene.
+ - Additional function documentation added to Tilia.cs
+
+### Changed
+ - CreateInvoice is no longer a private function.
+ - Fixed some 'declared but never used' warnings coming from third-party SimpleWebBrowser dependency.
+ - Fixed 'WWW is obsolete' warning coming from third-party SimpleWebBrowser dependency.
+ - Fixed 'OnPageLoaded event not used' warning coming from third-party SimpleWebBrowser dependency.
+ - Function parameter names for API calls made more consistent.
+ - Fixed some integers being incorrectly serialized as strings.
+ - Fixed bug in deserializing line_items, subitems, and payment_methods due to API docs showing incorrect payload format.
+
 ## [0.9.1] - 2021-08-24
 ### Added
 - README.md file
