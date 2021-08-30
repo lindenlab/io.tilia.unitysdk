@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.9.3] - 2021-08-30
+### Added
+ - Expanded TiliaDemo scene for escrow testing.
+
+### Changed
+ - Removed hard-coded file paths inside third-party SimpleWebBrowser dependency. Now relies on AssetDatabase.GUIDToAssetPath.
+ - Removed hard-coded file path for TiliaPayIntegrator.html file used in sandbox testing. Now relies on AssetDatabase.GUIDToAssetPath.
+ - CreateEscrow is no longer a private function.
+
 ## [0.9.2] - 2021-08-25
 ### Added
  - Improved support for handling 500 server errors from API backend.

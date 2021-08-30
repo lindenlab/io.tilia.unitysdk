@@ -12,7 +12,7 @@ namespace Tilia.Pay
 {
     public class Tilia : MonoBehaviour
     {
-        public static readonly string Version = "0.9.2";
+        public static readonly string Version = "0.9.3";
 
         public bool StagingEnvironment = true;
 
@@ -104,11 +104,13 @@ namespace Tilia.Pay
                 {
                     WebBrowser2DComponent.OnJSQuery += OnJSQuery;
                     WebBrowser2DComponent.OnPageLoaded += OnPageLoaded;
+#if UNITY_EDITOR
                     // Testing in editor
-                    var IntegratorHTML = Application.dataPath + "/Tilia/Runtime/Widget/TiliaPayIntegrator.html";
+                    string GUIDPath = UnityEditor.AssetDatabase.GUIDToAssetPath("f1e36d4d93e14744686f94299e2cc6aa").Substring(7);
+                    var IntegratorHTML = System.IO.Path.Combine(Application.dataPath, GUIDPath);
                     LogInfo("Defaulting to " + IntegratorHTML);
                     WebBrowser2DComponent.InitialURL = IntegratorHTML;
-                    //WebBrowser2DComponent.Navigate(IntegratorHTML);
+#endif
                 }
 
                 // Start web browser off in inactive state until we need it.
@@ -334,7 +336,7 @@ namespace Tilia.Pay
         /// </summary>
         /// <param name="invoice">All the necessary details for a new Escrow passed as a TiliaNewInvoice object.</param>
         /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
-        private void CreateEscrow(TiliaNewInvoice invoice, Action<TiliaEscrow> onComplete)
+        public void CreateEscrow(TiliaNewInvoice invoice, Action<TiliaEscrow> onComplete)
         {
             ValidateAndSend("", () => {
                 PerformWebPost(

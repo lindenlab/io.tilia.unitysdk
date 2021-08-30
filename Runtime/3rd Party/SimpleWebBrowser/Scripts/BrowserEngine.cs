@@ -99,10 +99,14 @@ namespace SimpleWebBrowser
             //Also change the path in deployment script.
             StreamingAssetPath = Application.streamingAssetsPath;
 #if UNITY_EDITOR_64
-         string PluginServerPath = Path.Combine(Application.dataPath,@"Tilia\Runtime\3rd Party\SimpleWebBrowser\PluginServer\x64");
+            string GUIDPath = UnityEditor.AssetDatabase.GUIDToAssetPath("e37f2a9169688ed449c059709e694bdf").Substring(7);
+            string PluginServerPath = Path.Combine(Application.dataPath, GUIDPath);
+            //string PluginServerPath = Path.Combine(Application.dataPath,@"Tilia\Runtime\3rd Party\SimpleWebBrowser\PluginServer\x64");
 #else
 #if UNITY_EDITOR_32
-            string PluginServerPath = Application.dataPath + @"\Tilia\Runtime\3rd Party\SimpleWebBrowser\PluginServer\x86";
+            string PluginServerPath = UnityEditor.AssetDatabase.GUIDToAssetPath("aa324a6cacde50f4bb9106cc5a2974b2").Substring(7);
+            string PluginServerPath = Path.Combine(Application.dataPath, GUIDPath);
+            //string PluginServerPath = Application.dataPath + @"\Tilia\Runtime\3rd Party\SimpleWebBrowser\PluginServer\x86";
 #else
         //HACK
         string AssemblyPath=System.Reflection.Assembly.GetExecutingAssembly().Location;

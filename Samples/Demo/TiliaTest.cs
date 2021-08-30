@@ -105,6 +105,120 @@ public class TiliaTest : MonoBehaviour
             });
     }
 
+    public void CreateEscrow()
+    {
+        var price = Int32.Parse(PurchasePrice.text, CultureInfo.InvariantCulture);
+        var product = PurchaseProduct.text;
+        var user = PurchaseAccount.text;
+        Debug.Log("Attempting escrow of " + product + " by " + user + " for $" + price + "):");
+        var newItem = new TiliaLineItem()
+        {
+            ProductSKU = product,
+            Description = "A cool product you really need.",
+            Amount = price,
+            Currency = "USD",
+            TransactionType = "user_to_integrator",
+            ReferenceType = "integrator_product_id",
+            ReferenceID = product
+        };
+        var newPurchase = new TiliaNewInvoice()
+        {
+            AccountID = user,
+            ReferenceType = "product_purchase_id",
+            ReferenceID = "escrow_" + product,
+            Description = "A great purchase full of cool stuff."
+        };
+        newPurchase.LineItems.Add(newItem);
+        var newPayment = new TiliaPayment()
+        {
+            Amount = 0,
+            ID = PurchasePSP.text
+        };
+        newPurchase.PaymentMethods.Add(newPayment);
+        TiliaPay.CreateEscrow(newPurchase,
+            (value) =>
+            {
+                if (value.Success)
+                {
+                    PurchaseInvoice.text = value.ID;
+                    Debug.Log("Escrow created.");
+                }
+                else
+                {
+                    Debug.Log("Something went wrong creating the escrow.");
+                }
+            });
+    }
+
+    public void PayEscrow()
+    {
+        var invoiceID = PurchaseInvoice.text;
+        TiliaPay.PayEscrow(invoiceID,
+            (value) =>
+            {
+                if (value.Success)
+                {
+                    Debug.Log("Escrow paid.");
+                }
+                else
+                {
+                    Debug.Log("Something went wrong paying the escrow.");
+                }
+            });
+    }
+
+    public void CommitEscrow()
+    {
+        var invoiceID = PurchaseInvoice.text;
+        TiliaPay.CommitEscrow(invoiceID,
+            (value) =>
+            {
+                if (value.Success)
+                {
+                    Debug.Log("Escrow committed.");
+                }
+                else
+                {
+                    Debug.Log("Something went wrong comitting the escrow.");
+                }
+            });
+    }
+
+    public void CancelEscrow()
+    {
+        var invoiceID = PurchaseInvoice.text;
+        TiliaPay.CancelEscrow(invoiceID,
+            (value) =>
+            {
+                if (value.Success)
+                {
+                    Debug.Log("Escrow canceled.");
+                }
+                else
+                {
+                    Debug.Log("Something went wrong canceling the escrow.");
+                }
+            });
+    }
+
+    public void GetEscrow()
+    {
+        var invoiceID = PurchaseInvoice.text;
+        TiliaPay.GetEscrow(invoiceID,
+            (value) =>
+            {
+                if (value.Success)
+                {
+                    Debug.Log("Escrow found.");
+                    Debug.Log(JsonConvert.SerializeObject(value, Formatting.Indented));
+                }
+                else
+                {
+                    Debug.Log("Something went wrong getting the escrow.");
+                }
+            });
+    }
+
     public void CopyAccountToPurchase()
     {
         PurchaseAccount.text = AccountInput.text;
