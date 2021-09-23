@@ -12,7 +12,7 @@ namespace Tilia.Pay
 {
     public class Tilia : MonoBehaviour
     {
-        public static readonly string Version = "0.9.3";
+        public static readonly string Version = "0.9.4";
 
         public bool StagingEnvironment = true;
 
@@ -98,7 +98,7 @@ namespace Tilia.Pay
                 WebBrowser2DComponent = WebBrowser.GetComponentInChildren<SimpleWebBrowser.WebBrowser2D>();
                 if (WebBrowser2DComponent == null)
                 {
-                    LogError("Failed to find WebBrowser2D component.");
+                    LogInfo("Failed to find WebBrowser2D component.");
                 }
                 else
                 {
@@ -118,7 +118,7 @@ namespace Tilia.Pay
             }
             else
             {
-                LogError("No browser UI game object specified.");
+                LogInfo("No browser UI game object specified.");
             }
         }
         #endregion
@@ -269,7 +269,7 @@ namespace Tilia.Pay
         /// <param name="accountID">User account ID that the payout is being requested for.</param>
         /// <param name="payout">Full payout details defined by a TiliaNewPayout object class.</param>
         /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
-        private void CreatePayout(string accountID, TiliaNewPayout payout, Action<TiliaPayout> onComplete)
+        public void CreatePayout(string accountID, TiliaNewPayout payout, Action<TiliaPayout> onComplete)
         {
             ValidateAndSend("", () => {
                 PerformWebPost(
@@ -533,7 +533,7 @@ namespace Tilia.Pay
         }
 
         /// <summary>
-        /// Create the KYC (Know Your Customer) status of a user account. In other words, have they filled in their contact information yet.
+        /// Check the KYC (Know Your Customer) status of a user account. In other words, have they filled in their contact information yet.
         /// </summary>
         /// <param name="accountID">The account ID of the user you want to check.</param>
         /// <param name="onComplete">Action callback event. Callback happens on both success and failure.</param>
