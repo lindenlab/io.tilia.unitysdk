@@ -31,6 +31,7 @@ namespace Tilia.Pay.Tests
                 string filePath = Path.Combine(Application.dataPath, GUIDPath);
                 string[] fileData = File.ReadAllText(filePath).Split("\r"[0]);
                 TestClientID = fileData[0];
+                TestClientID = TestClientID.Replace("%0a", "");
             }
 
             if (string.IsNullOrEmpty(TestClientSecret))
@@ -39,6 +40,7 @@ namespace Tilia.Pay.Tests
                 string filePath = Path.Combine(Application.dataPath, GUIDPath);
                 string[] fileData = File.ReadAllText(filePath).Split("\r"[0]);
                 TestClientSecret = fileData[0];
+                TestClientSecret = TestClientSecret.Replace("%0a", "");
             }
 
             if (TestObject == null)
