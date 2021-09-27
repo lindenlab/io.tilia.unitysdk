@@ -30,8 +30,7 @@ namespace Tilia.Pay.Tests
                 string GUIDPath = UnityEditor.AssetDatabase.GUIDToAssetPath("7d6bdcf9af7838e4788b8f09efc8ae43").Substring(7);
                 string filePath = Path.Combine(Application.dataPath, GUIDPath);
                 string[] fileData = File.ReadAllText(filePath).Split("\r"[0]);
-                TestClientID = fileData[0];
-                TestClientID = TestClientID.Replace("%0a", "");
+                TestClientID = fileData[0].Replace("\n", "").Replace("\r", "");
             }
 
             if (string.IsNullOrEmpty(TestClientSecret))
@@ -39,8 +38,7 @@ namespace Tilia.Pay.Tests
                 string GUIDPath = UnityEditor.AssetDatabase.GUIDToAssetPath("925df04337594c6478891dc2540b44af").Substring(7);
                 string filePath = Path.Combine(Application.dataPath, GUIDPath);
                 string[] fileData = File.ReadAllText(filePath).Split("\r"[0]);
-                TestClientSecret = fileData[0];
-                TestClientSecret = TestClientSecret.Replace("%0a", "");
+                TestClientSecret = fileData[0].Replace("\n", "").Replace("\r", "");
             }
 
             if (TestObject == null)
