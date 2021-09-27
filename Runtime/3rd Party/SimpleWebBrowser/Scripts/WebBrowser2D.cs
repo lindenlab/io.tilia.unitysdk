@@ -180,7 +180,8 @@ namespace SimpleWebBrowser
 
             if (mainUIPanel != null) {
             mainUIPanel.KeepUIVisible = KeepUIVisible;
-            if (!KeepUIVisible)
+            mainUIPanel.UIEnabled = UIEnabled;
+            if (!KeepUIVisible || !UIEnabled)
                 mainUIPanel.Hide();
             }
 

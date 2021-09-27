@@ -12,7 +12,10 @@ namespace Tilia.Pay
 {
     public class Tilia : MonoBehaviour
     {
-        public static readonly string Version = "0.9.4";
+        public static readonly string Version = "0.9.5";
+
+        [HideInInspector]
+        public bool LoggingEnabled = false;
 
         public bool StagingEnvironment = true;
 
@@ -598,7 +601,7 @@ namespace Tilia.Pay
 
         #endregion
 
-        #region Static Helper Functions
+        #region Helper Functions
         public static bool TokenIsNull(JToken token)
         {
             return token == null || token.Type == JTokenType.Null;
@@ -609,14 +612,15 @@ namespace Tilia.Pay
             return !TokenIsNull(value) ? value.ToString() : null;
         }
 
-        internal static void LogError(string error)
+        internal void LogError(string error)
         {
             Debug.LogError("Tilia ERROR: " + error);
         }
 
-        internal static void LogInfo(string info)
+        internal void LogInfo(string info)
         {
-            Debug.LogWarning("Tilia INFO: " + info);
+            if (LoggingEnabled)
+                Debug.LogWarning("Tilia INFO: " + info);
         }
         #endregion
 

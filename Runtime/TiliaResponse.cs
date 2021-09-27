@@ -271,12 +271,26 @@ namespace Tilia.Pay
 
                 if (!Tilia.TokenIsNull(payload["created"]))
                 {
-                    Created = DateTime.Parse(payload["created"].ToString());
+                    try
+                    {
+                        Created = DateTime.Parse(payload["created"].ToString());
+                    }
+                    catch (FormatException)
+                    {
+                        // The date was messed up somehow. Huh.
+                    }
                 }
 
                 if (!Tilia.TokenIsNull(payload["updated"]))
                 {
-                    Updated = DateTime.Parse(payload["updated"].ToString());
+                    try
+                    {
+                        Updated = DateTime.Parse(payload["updated"].ToString());
+                    }
+                    catch (FormatException)
+                    {
+                        // The date was messed up somehow. Huh.
+                    }
                 }
 
                 if (!Tilia.TokenIsNull(payload["line_items"]))
@@ -493,7 +507,14 @@ namespace Tilia.Pay
                 }
                 if (!Tilia.TokenIsNull(payload["created"]))
                 {
-                    Created = DateTime.Parse(payload["created"].ToString());
+                    try
+                    {
+                        Created = DateTime.Parse(payload["created"].ToString());
+                    }
+                    catch (FormatException)
+                    {
+                        // The date was messed up somehow. Huh.
+                    }
                 }
             }
         }
@@ -651,12 +672,26 @@ namespace Tilia.Pay
 
                 if (!Tilia.TokenIsNull(import["created"]))
                 {
-                    Created = DateTime.Parse(import["created"].ToString());
+                    try
+                    {
+                        Created = DateTime.Parse(import["created"].ToString());
+                    }
+                    catch (FormatException)
+                    {
+                        // The date was messed up somehow. Huh.
+                    }
                 }
 
                 if (!Tilia.TokenIsNull(import["updated"]))
                 {
-                    Updated = DateTime.Parse(import["updated"].ToString());
+                    try
+                    {
+                        Updated = DateTime.Parse(import["updated"].ToString());
+                    }
+                    catch (FormatException)
+                    {
+                        // The date was messed up somehow. Huh.
+                    }
                 }
             }
 
@@ -733,12 +768,26 @@ namespace Tilia.Pay
                 Integrator = Tilia.StringOrNull(payload["integrator"]);
                 if (!Tilia.TokenIsNull(payload["created"]))
                 {
-                    Created = DateTime.Parse(payload["created"].ToString());
+                    try
+                    {
+                        Created = DateTime.Parse(payload["created"].ToString());
+                    }
+                    catch (FormatException)
+                    {
+                        // The date was messed up somehow. Huh.
+                    }
                 }
 
                 if (!Tilia.TokenIsNull(payload["updated"]))
                 {
-                    Updated = DateTime.Parse(payload["updated"].ToString());
+                    try
+                    {
+                        Updated = DateTime.Parse(payload["updated"].ToString());
+                    }
+                    catch (FormatException)
+                    {
+                        // The date was messed up somehow. Huh.
+                    }
                 }
             }
         }
@@ -807,12 +856,26 @@ namespace Tilia.Pay
                 Status = Tilia.StringOrNull(payload["status"]);
                 if (!Tilia.TokenIsNull(payload["created"]))
                 {
-                    Created = DateTime.Parse(payload["created"].ToString());
+                    try
+                    {
+                        Created = DateTime.Parse(payload["created"].ToString());
+                    }
+                    catch (FormatException)
+                    {
+                        // The date was messed up somehow. Huh.
+                    }
                 }
 
                 if (!Tilia.TokenIsNull(payload["updated"]))
                 {
-                    Updated = DateTime.Parse(payload["updated"].ToString());
+                    try
+                    {
+                        Updated = DateTime.Parse(payload["updated"].ToString());
+                    }
+                    catch (FormatException)
+                    {
+                        // The date was messed up somehow. Huh.
+                    }
                 }
 
                 if (!Tilia.TokenIsNull(payload["credit"]))

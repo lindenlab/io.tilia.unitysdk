@@ -22,6 +22,7 @@ namespace SimpleWebBrowser
 
 
         [HideInInspector] public bool KeepUIVisible = false;
+        [HideInInspector] public bool UIEnabled = true;
 
 
         public void InitPrefabLinks()
@@ -51,12 +52,15 @@ namespace SimpleWebBrowser
 
         public void Show()
         {
-            UrlField.GetComponent<CanvasRenderer>().SetAlpha(1.0f);
-            UrlField.placeholder.gameObject.GetComponent<CanvasRenderer>().SetAlpha(1.0f);
-            UrlField.textComponent.gameObject.GetComponent<CanvasRenderer>().SetAlpha(1.0f);
-            Back.gameObject.SetActive(true);
-            Forward.gameObject.SetActive(true);
-            Background.GetComponent<CanvasRenderer>().SetAlpha(1.0f);
+            if (UIEnabled)
+            {
+                UrlField.GetComponent<CanvasRenderer>().SetAlpha(1.0f);
+                UrlField.placeholder.gameObject.GetComponent<CanvasRenderer>().SetAlpha(1.0f);
+                UrlField.textComponent.gameObject.GetComponent<CanvasRenderer>().SetAlpha(1.0f);
+                Back.gameObject.SetActive(true);
+                Forward.gameObject.SetActive(true);
+                Background.GetComponent<CanvasRenderer>().SetAlpha(1.0f);
+            }
         }
 
         public void Hide()
@@ -84,7 +88,7 @@ namespace SimpleWebBrowser
 
         void Update()
         {
-            if (UrlField.isFocused && !KeepUIVisible)
+            if (UrlField.isFocused && !KeepUIVisible && UIEnabled)
             {
                 Show();
             }

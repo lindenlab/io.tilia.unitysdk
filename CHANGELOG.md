@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.9.5] - 2021-09-27
+### Changed
+ - Fixed FormatException errors that could crop up when server returned empty or malformed datetime fields in escrow invoices.
+ - Fixed third-party SimpleWebBrowser not hiding the address bar like it was supposed to.
+ - Logging to console now disabled by default when not run from Unity Test Runner.
+
+## [0.9.4] - 2021-09-22
+### Added
+ - Prefabs folder added with TiliaPay SDK prefab.
+ - Updated documentation on getting started.
+ - Tilia now has it own assembly definition.
+
 ## [0.9.3] - 2021-08-30
 ### Added
  - Expanded TiliaDemo scene for escrow testing.
