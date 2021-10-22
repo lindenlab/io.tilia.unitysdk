@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SimpleWebBrowser;
 
 namespace Tilia
 {
