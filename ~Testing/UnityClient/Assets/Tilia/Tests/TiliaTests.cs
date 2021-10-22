@@ -7,12 +7,12 @@ using UnityEngine.TestTools;
 using System.Threading;
 using System.IO;
 
-namespace Tilia.Pay.Tests
+namespace Tilia.Tests
 {
     public class TiliaTests
     {
         private GameObject TestObject;
-        private Tilia TiliaPay;
+        private TiliaPay TiliaPaySDK;
 
         private string UserID;
         private string InvoiceID;
@@ -46,13 +46,13 @@ namespace Tilia.Pay.Tests
                 TestObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
             }
 
-            if (TiliaPay == null)
+            if (TiliaPaySDK == null)
             {
-                TiliaPay = TestObject.AddComponent<Tilia>();
-                TiliaPay.ClientID = TestClientID;
-                TiliaPay.ClientSecret = TestClientSecret;
-                TiliaPay.StagingEnvironment = true;
-                TiliaPay.LoggingEnabled = true;
+                TiliaPaySDK = TestObject.AddComponent<TiliaPay>();
+                TiliaPaySDK.StagingClientID = TestClientID;
+                TiliaPaySDK.StagingClientSecret = TestClientSecret;
+                TiliaPaySDK.StagingEnvironment = true;
+                TiliaPaySDK.LoggingEnabled = true;
             }
 
             yield return new EnterPlayMode();
@@ -73,7 +73,7 @@ namespace Tilia.Pay.Tests
             bool finished = false;
             var startTime = Time.time;
 
-            TiliaPay.RegisterUser(newUser,
+            TiliaPaySDK.RegisterUser(newUser,
                 (value) =>
                 {
                     if (value.Success)
@@ -108,7 +108,7 @@ namespace Tilia.Pay.Tests
             var startTime = Time.time;
             string state = null;
 
-            TiliaPay.CheckKYC(UserID,
+            TiliaPaySDK.CheckKYC(UserID,
                 (value) =>
                 {
                     if (value.Success)
@@ -144,7 +144,7 @@ namespace Tilia.Pay.Tests
             var startTime = Time.time;
             string id = null;
 
-            TiliaPay.GetUserInfo(UserID,
+            TiliaPaySDK.GetUserInfo(UserID,
                 (value) =>
                 {
                     if (value.Success)
@@ -179,7 +179,7 @@ namespace Tilia.Pay.Tests
             bool finished = false;
             var startTime = Time.time;
 
-            TiliaPay.GetPaymentMethods(UserID,
+            TiliaPaySDK.GetPaymentMethods(UserID,
                 (value) =>
                 {
                     if (value.Success)
@@ -246,7 +246,7 @@ namespace Tilia.Pay.Tests
                 ID = PaymentID
             };
             newPurchase.PaymentMethods.Add(newPayment);
-            TiliaPay.CreateInvoice(newPurchase,
+            TiliaPaySDK.CreateInvoice(newPurchase,
                 (value) =>
                 {
                     if (value.Success)
@@ -285,7 +285,7 @@ namespace Tilia.Pay.Tests
             bool finished = false;
             var startTime = Time.time;
 
-            TiliaPay.PayInvoice(InvoiceID,
+            TiliaPaySDK.PayInvoice(InvoiceID,
                 (value) =>
                 {
                     if (value.Success)
@@ -318,7 +318,7 @@ namespace Tilia.Pay.Tests
             var startTime = Time.time;
             string redirect = null;
 
-            TiliaPay.RequestClientRedirectURL(UserID, new string[] { "user_info" },
+            TiliaPaySDK.RequestClientRedirectURL(UserID, new string[] { "user_info" },
                 (value) =>
                 {
                     if (value.Success)
@@ -384,7 +384,7 @@ namespace Tilia.Pay.Tests
                 ID = PaymentID
             };
             newPurchase.PaymentMethods.Add(newPayment);
-            TiliaPay.CreateEscrow(newPurchase,
+            TiliaPaySDK.CreateEscrow(newPurchase,
                 (value) =>
                 {
                     if (value.Success)
@@ -423,7 +423,7 @@ namespace Tilia.Pay.Tests
             bool finished = false;
             var startTime = Time.time;
 
-            TiliaPay.PayEscrow(EscrowID,
+            TiliaPaySDK.PayEscrow(EscrowID,
                 (value) =>
                 {
                     if (value.Success)
@@ -460,7 +460,7 @@ namespace Tilia.Pay.Tests
             bool finished = false;
             var startTime = Time.time;
 
-            TiliaPay.CommitEscrow(EscrowID,
+            TiliaPaySDK.CommitEscrow(EscrowID,
                 (value) =>
                 {
                     if (value.Success)
