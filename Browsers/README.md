@@ -6,7 +6,7 @@ The Tilia SDK currently supports two web browser options (see below).
 
 ## Simple Web Browser
 
-This is a basic open-source Chromium web browser available for free.
+This is a basic open-source Chromium web browser available for free under the GNU GPL 3.0. License details can be found at https://github.com/tunerok/unity_browser/blob/master/LICENSE.
 
 This browser option currently only supports standalone Windows projects.
 
