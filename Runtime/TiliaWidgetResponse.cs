@@ -6,7 +6,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Tilia.Pay
+namespace Tilia
 {
     [Serializable]
     public class TiliaWidgetResponse
@@ -14,9 +14,6 @@ namespace Tilia.Pay
         public string State;
         public string Source;
         public string Event;
-
-        // Captured for debug purposes.
-        //public JToken raw_json;
 
         public bool Canceled
         {
@@ -39,12 +36,9 @@ namespace Tilia.Pay
         // in overrides.
         public virtual void Import(JToken json)
         {
-            // Captured for debug purposes.
-            //raw_json = json;
-
-            State = Tilia.StringOrNull(json["state"]);
-            Source = Tilia.StringOrNull(json["source"]);
-            Event = Tilia.StringOrNull(json["event"]);
+            State = TiliaPay.StringOrNull(json["state"]);
+            Source = TiliaPay.StringOrNull(json["source"]);
+            Event = TiliaPay.StringOrNull(json["event"]);
         }
     }
 
@@ -66,9 +60,9 @@ namespace Tilia.Pay
             // Let it do the common elements all returns have.
             base.Import(json);
 
-            ID = Tilia.StringOrNull(json["id"]);
-            PSPReference = Tilia.StringOrNull(json["psp_reference"]);
-            PMState = Tilia.StringOrNull(json["pm_state"]);
+            ID = TiliaPay.StringOrNull(json["id"]);
+            PSPReference = TiliaPay.StringOrNull(json["psp_reference"]);
+            PMState = TiliaPay.StringOrNull(json["pm_state"]);
         }
     }
 
@@ -90,9 +84,9 @@ namespace Tilia.Pay
             // Let it do the common elements all returns have.
             base.Import(json);
 
-            ID = Tilia.StringOrNull(json["id"]);
-            PSPReference = Tilia.StringOrNull(json["psp_reference"]);
-            PMState = Tilia.StringOrNull(json["pm_state"]);
+            ID = TiliaPay.StringOrNull(json["id"]);
+            PSPReference = TiliaPay.StringOrNull(json["psp_reference"]);
+            PMState = TiliaPay.StringOrNull(json["pm_state"]);
         }
     }
 
@@ -112,7 +106,7 @@ namespace Tilia.Pay
             // Let it do the common elements all returns have.
             base.Import(json);
 
-            Result = Tilia.StringOrNull(json["result"]);
+            Result = TiliaPay.StringOrNull(json["result"]);
         }
     }
 

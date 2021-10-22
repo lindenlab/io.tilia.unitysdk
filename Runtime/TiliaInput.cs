@@ -6,7 +6,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Tilia.Pay
+namespace Tilia
 {
     [Serializable]
     public abstract class TiliaInput

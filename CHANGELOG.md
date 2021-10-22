@@ -1,6 +1,41 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.9.7] - 2021-10-21
+### Changed
+ - Dependency on local HTML file removed for web widget. Now opens directly to Tilia.IO website for widget. This fixes the KYC widget flow failing to load properly.
+ - Widget/TiliaPayIntegrator.html moved to Samples folder, as it is no longer required, but may be a useful reference for developers to create their own alternative to the default.
+ - Browser specific code removed from TiliaPay and implemented into TiliaBrowser class instead.
+ - Added second set of credentials for Production environment, as they will sometimes be different than the Staging environment credentials.
+ - Moved 3rd Party folder out of Runtime.
+ - After installing the Tilia Unity SDK, you must now pick a web browser support package to install as well. Included in Tilia/Browsers folder.
+
+### Added
+ - URL parameters added to TiliaPay component for specifying Production and Staging widget URLs.
+ - New TiliaBrowser abstract class for handling widget operations outside of main TiliaPay class. This allows for adding support for different web browser plugins in the future.
+ - Added TiliaBrowserSWB class that implements TiliaBrowser for the SimpleWebBrowser 3rd-party browser plugin included with the Tilia SDK.
+ - Added TiliaBrowserZF class that implements TiliaBrowser for the Embedded Web Browser by Zen Fulcrum (Available on Unity Asset Store, not included).
+
+## [0.9.6] - 2021-10-07
+### Changed
+ - Namespace changed from Tilia.Pay to Tilia
+ - Primary class name changed from Tilia to TiliaPay to remove ambiguity with namespace.
+ - Removed Test JS button from sample demo scene which no longer serves any purpose.
+ - Cleaned up some commented out lines of code that are no longer needed.
+ - Clarified in sample demo scene that price is in cents, not dollars.
+ - Deleted unnecessary/unused 60mb zip file from third party SimpleWebBrowser component.
+ - Added Editor-only assembly definition to third-party SimpleWebBrowser/Editor directory.
+ - Fixed post build editor script in third party SimpleWebBrowser to remove hard-coded file paths. Now relies on AssetDatabase.GUIDToAssetPath.
+ - Added HideUI option to third-party SimpleWebBrowser to prevent URL bar from showing up. Separates this behaviour from UIEnabled which has other side effects.
+ - Removed all PII variables from TiliaPaymentMethods.TiliaPaymentMethod as these are considered deprecated.
+ - Removed redundant PaymentMethodID from TiliaPaymentMethods.TiliaPaymentMethod, API sends it as a duplicate of ID
+ - Removed AccountAlreadyExists bool from TiliaRegistration, deprecated in API.
+ - LoggingEnabled switch on TiliaPay SDK is no longer hidden from the inspector.
+
+### Added
+ - New Payout Testing panel in sample demo scene for sandbox testing of payouts.
+ - Headers and tooltips added to TiliaPay component in inspector.
+
 ## [0.9.5] - 2021-09-27
 ### Changed
  - Fixed FormatException errors that could crop up when server returned empty or malformed datetime fields in escrow invoices.

@@ -6,7 +6,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Tilia.Pay
+namespace Tilia
 {
     [Serializable]
     public class TiliaResponse
@@ -21,9 +21,6 @@ namespace Tilia.Pay
 
         // Only used if response is in a failed status.
         public Dictionary<string, string[]> ResponseErrors;
-
-        // Capture for debug purposes.
-        //public JObject raw_json;
 
         public bool Recieved
         {
@@ -58,17 +55,14 @@ namespace Tilia.Pay
         // in overrides.
         public virtual void Import(JToken json)
         {
-            // Capture for debug purposes.
-            //raw_json = json;
-
-            if (!Tilia.TokenIsNull(json["web_response_code"]))
+            if (!TiliaPay.TokenIsNull(json["web_response_code"]))
             {
                 ResponseWebCode = json["web_response_code"].Value<int>();
             }
 
-            ResponseStatus = Tilia.StringOrNull(json["status"]);
+            ResponseStatus = TiliaPay.StringOrNull(json["status"]);
             ResponseMessages = new List<string>();
-            if (!Tilia.TokenIsNull(json["message"]))
+            if (!TiliaPay.TokenIsNull(json["message"]))
             {
                 foreach (JToken msg in json["message"])
                 {
@@ -76,7 +70,7 @@ namespace Tilia.Pay
                 }
             }
             ResponseCodes = new List<string>();
-            if (!Tilia.TokenIsNull(json["codes"]))
+            if (!TiliaPay.TokenIsNull(json["codes"]))
             {
                 foreach (JToken msg in json["codes"])
                 {
@@ -87,7 +81,7 @@ namespace Tilia.Pay
             {
                 var payload = json["payload"];
                 ResponseErrors = new Dictionary<string, string[]>();
-                if (!Tilia.TokenIsNull(payload))
+                if (!TiliaPay.TokenIsNull(payload))
                 {
                     if (payload.Type == JTokenType.String)
                     {
@@ -97,7 +91,7 @@ namespace Tilia.Pay
                             ResponseErrors.Add("general", new string[] { payload.ToString() });
                         }
                     }
-                    else if (!Tilia.TokenIsNull(payload["errors"]))
+                    else if (!TiliaPay.TokenIsNull(payload["errors"]))
                     {
                         // Errors are sometimes JSON with string arrays.
                         foreach (var err in payload["errors"].Children<JProperty>())
@@ -142,12 +136,11 @@ namespace Tilia.Pay
 
         public override void Import(JToken json)
         {
-            // Non-standard return format for tokens, don't do base.
-            //base.Import(json);
-            AccessToken = Tilia.StringOrNull(json["access_token"]);
-            TokenType = Tilia.StringOrNull(json["token_type"]);
+            // Non-standard return format for tokens, don't do base import here from parent class.
+            AccessToken = TiliaPay.StringOrNull(json["access_token"]);
+            TokenType = TiliaPay.StringOrNull(json["token_type"]);
             ExpiresIn = json["expires_in"].Value<int>();
-            Scope = Tilia.StringOrNull(json["scope"]);
+            Scope = TiliaPay.StringOrNull(json["scope"]);
             Created = DateTime.Now;
         }
     }
@@ -206,21 +199,21 @@ namespace Tilia.Pay
 
             public void Import(JToken import)
             {
-                ID = Tilia.StringOrNull(import["payment_method_id"]);
-                Currency = Tilia.StringOrNull(import["currency"]);
-                DisplayAmount = Tilia.StringOrNull(import["display_amount"]);
+                ID = TiliaPay.StringOrNull(import["payment_method_id"]);
+                Currency = TiliaPay.StringOrNull(import["currency"]);
+                DisplayAmount = TiliaPay.StringOrNull(import["display_amount"]);
 
-                if (!Tilia.TokenIsNull(import["amount"]))
+                if (!TiliaPay.TokenIsNull(import["amount"]))
                 {
                     Amount = import["amount"].Value<int>();
                 }
 
-                if (!Tilia.TokenIsNull(import["authorized_amount"]))
+                if (!TiliaPay.TokenIsNull(import["authorized_amount"]))
                 {
                     AuthorizedAmount = import["authorized_amount"].Value<int>();
                 }
 
-                if (!Tilia.TokenIsNull(import["subitems"]))
+                if (!TiliaPay.TokenIsNull(import["subitems"]))
                 {
                     SubItems = new List<TiliaSubItem>();
                     foreach (JProperty item in import["subitems"])
@@ -248,28 +241,28 @@ namespace Tilia.Pay
 
             // Now let's do the special stuff.
             var payload = json["payload"];
-            if (!Failed && !Tilia.TokenIsNull(payload))
+            if (!Failed && !TiliaPay.TokenIsNull(payload))
             {
-                ID = Tilia.StringOrNull(payload["invoice_id"]);
-                AccountID = Tilia.StringOrNull(payload["account_id"]);
-                ReferenceType = Tilia.StringOrNull(payload["reference_type"]);
-                ReferenceID = Tilia.StringOrNull(payload["reference_id"]);
-                State = Tilia.StringOrNull(payload["state"]);
-                Description = Tilia.StringOrNull(payload["description"]);
-                MetaData = Tilia.StringOrNull(payload["metadata"]);
-                FailureReason = Tilia.StringOrNull(payload["failure_reason"]);
+                ID = TiliaPay.StringOrNull(payload["invoice_id"]);
+                AccountID = TiliaPay.StringOrNull(payload["account_id"]);
+                ReferenceType = TiliaPay.StringOrNull(payload["reference_type"]);
+                ReferenceID = TiliaPay.StringOrNull(payload["reference_id"]);
+                State = TiliaPay.StringOrNull(payload["state"]);
+                Description = TiliaPay.StringOrNull(payload["description"]);
+                MetaData = TiliaPay.StringOrNull(payload["metadata"]);
+                FailureReason = TiliaPay.StringOrNull(payload["failure_reason"]);
 
-                if (!Tilia.TokenIsNull(payload["summary"]))
+                if (!TiliaPay.TokenIsNull(payload["summary"]))
                 {
                     Summary = new TiliaInvoiceSummary()
                     {
                         TotalAmount = payload["summary"]["total_amount"].Value<int>(),
-                        Currency = Tilia.StringOrNull(payload["summary"]["currency"]),
-                        DisplayAmount = Tilia.StringOrNull(payload["summary"]["display_amount"])
+                        Currency = TiliaPay.StringOrNull(payload["summary"]["currency"]),
+                        DisplayAmount = TiliaPay.StringOrNull(payload["summary"]["display_amount"])
                     };
                 }
 
-                if (!Tilia.TokenIsNull(payload["created"]))
+                if (!TiliaPay.TokenIsNull(payload["created"]))
                 {
                     try
                     {
@@ -281,7 +274,7 @@ namespace Tilia.Pay
                     }
                 }
 
-                if (!Tilia.TokenIsNull(payload["updated"]))
+                if (!TiliaPay.TokenIsNull(payload["updated"]))
                 {
                     try
                     {
@@ -293,7 +286,7 @@ namespace Tilia.Pay
                     }
                 }
 
-                if (!Tilia.TokenIsNull(payload["line_items"]))
+                if (!TiliaPay.TokenIsNull(payload["line_items"]))
                 {
                     LineItems = new List<TiliaLineItem>();
                     foreach (JProperty item in payload["line_items"])
@@ -302,7 +295,7 @@ namespace Tilia.Pay
                     }
                 }
 
-                if (!Tilia.TokenIsNull(payload["payment_methods"]))
+                if (!TiliaPay.TokenIsNull(payload["payment_methods"]))
                 {
                     PaymentMethods = new List<TiliaPaymentMethod>();
                     foreach (JProperty method in payload["payment_methods"])
@@ -311,7 +304,7 @@ namespace Tilia.Pay
                     }
                 }
 
-                if (!Tilia.TokenIsNull(payload["subitems"]))
+                if (!TiliaPay.TokenIsNull(payload["subitems"]))
                 {
                     SubItems = new List<TiliaSubItem>();
                     foreach (JProperty item in payload["subitems"])
@@ -350,21 +343,21 @@ namespace Tilia.Pay
 
         public void Import(JToken import)
         {
-            ID = Tilia.StringOrNull(import["line_item_id"]);
-            Currency = Tilia.StringOrNull(import["currency"]);
-            TransactionType = Tilia.StringOrNull(import["transaction_type"]);
-            ProductSKU = Tilia.StringOrNull(import["product_sku"]);
-            ReferenceType = Tilia.StringOrNull(import["reference_type"]);
-            ReferenceID = Tilia.StringOrNull(import["reference_id"]);
-            Description = Tilia.StringOrNull(import["description"]);
-            MetaData = Tilia.StringOrNull(import["metadata"]);
+            ID = TiliaPay.StringOrNull(import["line_item_id"]);
+            Currency = TiliaPay.StringOrNull(import["currency"]);
+            TransactionType = TiliaPay.StringOrNull(import["transaction_type"]);
+            ProductSKU = TiliaPay.StringOrNull(import["product_sku"]);
+            ReferenceType = TiliaPay.StringOrNull(import["reference_type"]);
+            ReferenceID = TiliaPay.StringOrNull(import["reference_id"]);
+            Description = TiliaPay.StringOrNull(import["description"]);
+            MetaData = TiliaPay.StringOrNull(import["metadata"]);
 
-            if (!Tilia.TokenIsNull(import["amount"]))
+            if (!TiliaPay.TokenIsNull(import["amount"]))
             {
                 Amount = import["amount"].Value<int>();
             }
 
-            if (!Tilia.TokenIsNull(import["subitems"]))
+            if (!TiliaPay.TokenIsNull(import["subitems"]))
             {
                 SubItems = new List<TiliaSubItem>();
                 foreach (JProperty item in import["subitems"])
@@ -405,21 +398,21 @@ namespace Tilia.Pay
 
         public void Import(JToken import)
         {
-            ID = Tilia.StringOrNull(import["subitem_id"]);
-            Currency = Tilia.StringOrNull(import["currency"]);
-            DisplayAmount = Tilia.StringOrNull(import["display_amount"]);
-            ReferenceType = Tilia.StringOrNull(import["reference_type"]);
-            ReferenceID = Tilia.StringOrNull(import["reference_id"]);
-            Description = Tilia.StringOrNull(import["description"]);
-            MetaData = Tilia.StringOrNull(import["metadata"]);
-            SourceAccountID = Tilia.StringOrNull(import["source_account_id"]);
-            SourcePaymentMethodID = Tilia.StringOrNull(import["source_payment_method_id"]);
-            SourceWalletID = Tilia.StringOrNull(import["source_wallet_id"]);
-            DestinationAccountID = Tilia.StringOrNull(import["destination_account_id"]);
-            DestinationPaymentMethodID = Tilia.StringOrNull(import["destination_payment_method_id"]);
-            DestinationWalletID = Tilia.StringOrNull(import["destination_wallet_id"]);
+            ID = TiliaPay.StringOrNull(import["subitem_id"]);
+            Currency = TiliaPay.StringOrNull(import["currency"]);
+            DisplayAmount = TiliaPay.StringOrNull(import["display_amount"]);
+            ReferenceType = TiliaPay.StringOrNull(import["reference_type"]);
+            ReferenceID = TiliaPay.StringOrNull(import["reference_id"]);
+            Description = TiliaPay.StringOrNull(import["description"]);
+            MetaData = TiliaPay.StringOrNull(import["metadata"]);
+            SourceAccountID = TiliaPay.StringOrNull(import["source_account_id"]);
+            SourcePaymentMethodID = TiliaPay.StringOrNull(import["source_payment_method_id"]);
+            SourceWalletID = TiliaPay.StringOrNull(import["source_wallet_id"]);
+            DestinationAccountID = TiliaPay.StringOrNull(import["destination_account_id"]);
+            DestinationPaymentMethodID = TiliaPay.StringOrNull(import["destination_payment_method_id"]);
+            DestinationWalletID = TiliaPay.StringOrNull(import["destination_wallet_id"]);
 
-            if (!Tilia.TokenIsNull(import["amount"]))
+            if (!TiliaPay.TokenIsNull(import["amount"]))
             {
                 Amount = import["amount"].Value<int>();
             }
@@ -433,7 +426,6 @@ namespace Tilia.Pay
         public string AutologinID;
         public string MetaData;
         public string TrackingID;
-        public bool? AccountAlreadyExists;
 
         public TiliaRegistration()
         {
@@ -453,16 +445,12 @@ namespace Tilia.Pay
 
             // Now let's do the special stuff.
             var payload = json["payload"];
-            if (!Failed && !Tilia.TokenIsNull(payload))
+            if (!Failed && !TiliaPay.TokenIsNull(payload))
             {
-                AccountID = Tilia.StringOrNull(payload["account_id"]);
-                AutologinID = Tilia.StringOrNull(payload["autologin_id"]);
-                MetaData = Tilia.StringOrNull(payload["metadata"]);
-                TrackingID = Tilia.StringOrNull(payload["tracking_id"]);
-                if (!Tilia.TokenIsNull(payload["account_already_exists"]))
-                {
-                    AccountAlreadyExists = payload["account_already_exists"].ToObject<bool>();
-                }
+                AccountID = TiliaPay.StringOrNull(payload["account_id"]);
+                AutologinID = TiliaPay.StringOrNull(payload["autologin_id"]);
+                MetaData = TiliaPay.StringOrNull(payload["metadata"]);
+                TrackingID = TiliaPay.StringOrNull(payload["tracking_id"]);
             }
         }
     }
@@ -495,17 +483,17 @@ namespace Tilia.Pay
 
             // Now let's do the special stuff.
             var payload = json["payload"];
-            if (!Failed && !Tilia.TokenIsNull(payload))
+            if (!Failed && !TiliaPay.TokenIsNull(payload))
             {
-                ID = Tilia.StringOrNull(payload["account_id"]);
-                UserName = Tilia.StringOrNull(payload["username"]);
-                Email = Tilia.StringOrNull(payload["email"]);
-                Integrator = Tilia.StringOrNull(payload["integrator"]);
-                if (!Tilia.TokenIsNull(payload["is_blocked"]))
+                ID = TiliaPay.StringOrNull(payload["account_id"]);
+                UserName = TiliaPay.StringOrNull(payload["username"]);
+                Email = TiliaPay.StringOrNull(payload["email"]);
+                Integrator = TiliaPay.StringOrNull(payload["integrator"]);
+                if (!TiliaPay.TokenIsNull(payload["is_blocked"]))
                 {
                     IsBlocked = payload["is_blocked"].ToObject<bool>();
                 }
-                if (!Tilia.TokenIsNull(payload["created"]))
+                if (!TiliaPay.TokenIsNull(payload["created"]))
                 {
                     try
                     {
@@ -544,10 +532,10 @@ namespace Tilia.Pay
 
             // Now let's do the special stuff.
             var payload = json["payload"];
-            if (!Failed && !Tilia.TokenIsNull(payload))
+            if (!Failed && !TiliaPay.TokenIsNull(payload))
             {
-                ID = Tilia.StringOrNull(payload["account_id"]);
-                State = Tilia.StringOrNull(payload["state"]);
+                ID = TiliaPay.StringOrNull(payload["account_id"]);
+                State = TiliaPay.StringOrNull(payload["state"]);
             }
         }
     }
@@ -576,10 +564,10 @@ namespace Tilia.Pay
 
             // Now let's do the special stuff.
             var payload = json["payload"];
-            if (!Failed && !Tilia.TokenIsNull(payload))
+            if (!Failed && !TiliaPay.TokenIsNull(payload))
             {
-                NonceAuthID = Tilia.StringOrNull(payload["nonce_auth_id"]);
-                Redirect = Tilia.StringOrNull(payload["redirect"]);
+                NonceAuthID = TiliaPay.StringOrNull(payload["nonce_auth_id"]);
+                Redirect = TiliaPay.StringOrNull(payload["redirect"]);
             }
         }
     }
@@ -606,22 +594,6 @@ namespace Tilia.Pay
             public string Integrator;
             public DateTime? Created;
             public DateTime? Updated;
-            public string PaymentMethodID;
-            public string FirstName;
-            public string LastName;
-            public string FullName;
-            public string Expiration;
-            public string Address1;
-            public string Address2;
-            public string City;
-            public string State;
-            public string CountryISO;
-            public string GeoIPState;
-            public string GeoIPCountryISO;
-            public string ZIP;
-            public string BIN;
-            public string LastFour;
-            public string AVS;
 
             // There's some wallet-specific variables we might encounter.
             public int WalletBalance;
@@ -638,39 +610,23 @@ namespace Tilia.Pay
 
             public void Import(JToken import)
             {
-                ID = Tilia.StringOrNull(import["id"]);
-                AccountID = Tilia.StringOrNull(import["account_id"]);
-                MethodClass = Tilia.StringOrNull(import["method_class"]);
-                DisplayString = Tilia.StringOrNull(import["display_string"]);
-                Provider = Tilia.StringOrNull(import["provider"]);
-                PSPReference = Tilia.StringOrNull(import["psp_reference"]);
-                PSPHashCode = Tilia.StringOrNull(import["psp_hash_code"]);
-                ProcessingCurrency = Tilia.StringOrNull(import["processing_currency"]);
-                PMState = Tilia.StringOrNull(import["pm_state"]);
-                Integrator = Tilia.StringOrNull(import["integrator"]);
-                PaymentMethodID = Tilia.StringOrNull(import["payment_method_id"]);
-                FirstName = Tilia.StringOrNull(import["first_name"]);
-                LastName = Tilia.StringOrNull(import["last_name"]);
-                FullName = Tilia.StringOrNull(import["full_name"]);
-                Expiration = Tilia.StringOrNull(import["expiration"]);
-                Address1 = Tilia.StringOrNull(import["address1"]);
-                Address2 = Tilia.StringOrNull(import["address2"]);
-                City = Tilia.StringOrNull(import["city"]);
-                State = Tilia.StringOrNull(import["state"]);
-                CountryISO = Tilia.StringOrNull(import["country_iso"]);
-                GeoIPState = Tilia.StringOrNull(import["geoip_state"]);
-                GeoIPCountryISO = Tilia.StringOrNull(import["geoip_country_iso"]);
-                ZIP = Tilia.StringOrNull(import["zip"]);
-                BIN = Tilia.StringOrNull(import["bin"]);
-                LastFour = Tilia.StringOrNull(import["last_four"]);
-                AVS = Tilia.StringOrNull(import["avs"]);
+                ID = TiliaPay.StringOrNull(import["id"]);
+                AccountID = TiliaPay.StringOrNull(import["account_id"]);
+                MethodClass = TiliaPay.StringOrNull(import["method_class"]);
+                DisplayString = TiliaPay.StringOrNull(import["display_string"]);
+                Provider = TiliaPay.StringOrNull(import["provider"]);
+                PSPReference = TiliaPay.StringOrNull(import["psp_reference"]);
+                PSPHashCode = TiliaPay.StringOrNull(import["psp_hash_code"]);
+                ProcessingCurrency = TiliaPay.StringOrNull(import["processing_currency"]);
+                PMState = TiliaPay.StringOrNull(import["pm_state"]);
+                Integrator = TiliaPay.StringOrNull(import["integrator"]);
 
-                if (!Tilia.TokenIsNull(import["wallet_balance"]))
+                if (!TiliaPay.TokenIsNull(import["wallet_balance"]))
                 {
                     WalletBalance = import["wallet_balance"].Value<int>();
                 }
 
-                if (!Tilia.TokenIsNull(import["created"]))
+                if (!TiliaPay.TokenIsNull(import["created"]))
                 {
                     try
                     {
@@ -682,7 +638,7 @@ namespace Tilia.Pay
                     }
                 }
 
-                if (!Tilia.TokenIsNull(import["updated"]))
+                if (!TiliaPay.TokenIsNull(import["updated"]))
                 {
                     try
                     {
@@ -716,7 +672,7 @@ namespace Tilia.Pay
             // Now let's do the special stuff.
             var payload = json["payload"];
             PaymentMethods = new List<TiliaPaymentMethod>();
-            if (!Tilia.TokenIsNull(payload))
+            if (!TiliaPay.TokenIsNull(payload))
             {
                 foreach (var method in payload)
                 {
@@ -757,16 +713,16 @@ namespace Tilia.Pay
 
             // Now let's do the special stuff.
             var payload = json["payload"];
-            if (!Failed && !Tilia.TokenIsNull(payload))
+            if (!Failed && !TiliaPay.TokenIsNull(payload))
             {
-                ID = Tilia.StringOrNull(payload["id"]);
-                AccountID = Tilia.StringOrNull(payload["account_id"]);
-                EscrowInvoiceID = Tilia.StringOrNull(payload["escrow_invoice_id"]);
-                CommitInvoiceID = Tilia.StringOrNull(payload["commit_invoice_id"]);
-                CancelInvoiceID = Tilia.StringOrNull(payload["cancel_invoice_id"]);
-                Status = Tilia.StringOrNull(payload["status"]);
-                Integrator = Tilia.StringOrNull(payload["integrator"]);
-                if (!Tilia.TokenIsNull(payload["created"]))
+                ID = TiliaPay.StringOrNull(payload["id"]);
+                AccountID = TiliaPay.StringOrNull(payload["account_id"]);
+                EscrowInvoiceID = TiliaPay.StringOrNull(payload["escrow_invoice_id"]);
+                CommitInvoiceID = TiliaPay.StringOrNull(payload["commit_invoice_id"]);
+                CancelInvoiceID = TiliaPay.StringOrNull(payload["cancel_invoice_id"]);
+                Status = TiliaPay.StringOrNull(payload["status"]);
+                Integrator = TiliaPay.StringOrNull(payload["integrator"]);
+                if (!TiliaPay.TokenIsNull(payload["created"]))
                 {
                     try
                     {
@@ -778,7 +734,7 @@ namespace Tilia.Pay
                     }
                 }
 
-                if (!Tilia.TokenIsNull(payload["updated"]))
+                if (!TiliaPay.TokenIsNull(payload["updated"]))
                 {
                     try
                     {
@@ -833,28 +789,28 @@ namespace Tilia.Pay
 
             // Now let's do the special stuff.
             var payload = json["payload"];
-            if (Tilia.TokenIsNull(payload))
+            if (TiliaPay.TokenIsNull(payload))
             {
                 // This might be an array of payouts, or it might be a standalone payout.
                 // If it's an array of payouts, we're already inside the payload.
                 payload = json;
             }
-            if (!Failed && !Tilia.TokenIsNull(payload))
+            if (!Failed && !TiliaPay.TokenIsNull(payload))
             {
                 // ID can come from two possible sub values depending on whether
                 // it was invoked from GetPayout or GetPayouts.
-                if (!Tilia.TokenIsNull(payload["payout_id"]))
+                if (!TiliaPay.TokenIsNull(payload["payout_id"]))
                 {
-                    ID = Tilia.StringOrNull(payload["payout_id"]);
+                    ID = TiliaPay.StringOrNull(payload["payout_id"]);
                 }
                 else
                 {
-                    ID = Tilia.StringOrNull(payload["payout_status_id"]);
+                    ID = TiliaPay.StringOrNull(payload["payout_status_id"]);
                 }
-                AccountID = Tilia.StringOrNull(payload["account_id"]);
-                CreditID = Tilia.StringOrNull(payload["credit_id"]);
-                Status = Tilia.StringOrNull(payload["status"]);
-                if (!Tilia.TokenIsNull(payload["created"]))
+                AccountID = TiliaPay.StringOrNull(payload["account_id"]);
+                CreditID = TiliaPay.StringOrNull(payload["credit_id"]);
+                Status = TiliaPay.StringOrNull(payload["status"]);
+                if (!TiliaPay.TokenIsNull(payload["created"]))
                 {
                     try
                     {
@@ -866,7 +822,7 @@ namespace Tilia.Pay
                     }
                 }
 
-                if (!Tilia.TokenIsNull(payload["updated"]))
+                if (!TiliaPay.TokenIsNull(payload["updated"]))
                 {
                     try
                     {
@@ -878,15 +834,15 @@ namespace Tilia.Pay
                     }
                 }
 
-                if (!Tilia.TokenIsNull(payload["credit"]))
+                if (!TiliaPay.TokenIsNull(payload["credit"]))
                 {
                     credit = new TiliaCredit()
                     {
-                        DestinationPaymentMethodID = Tilia.StringOrNull(payload["credit"]["destination_payment_method_id"]),
-                        Currency = Tilia.StringOrNull(payload["credit"]["currency"]),
-                        Status = Tilia.StringOrNull(payload["credit"]["status"]),
+                        DestinationPaymentMethodID = TiliaPay.StringOrNull(payload["credit"]["destination_payment_method_id"]),
+                        Currency = TiliaPay.StringOrNull(payload["credit"]["currency"]),
+                        Status = TiliaPay.StringOrNull(payload["credit"]["status"]),
                         Amount = payload["credit"]["amount"].Value<int>(),
-                        FeeAmount = !Tilia.TokenIsNull(payload["credit"]["fee_amount"]) ? payload["credit"]["fee_amount"].Value<int>() : 0
+                        FeeAmount = !TiliaPay.TokenIsNull(payload["credit"]["fee_amount"]) ? payload["credit"]["fee_amount"].Value<int>() : 0
                     };
                 }
 
@@ -918,7 +874,7 @@ namespace Tilia.Pay
             // Now let's do the special stuff.
             var payload = json["payload"];
             Payouts = new List<TiliaPayout>();
-            if (!Tilia.TokenIsNull(payload))
+            if (!TiliaPay.TokenIsNull(payload))
             {
                 foreach (var payout in payload)
                 {
