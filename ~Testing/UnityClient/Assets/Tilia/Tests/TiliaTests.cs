@@ -91,7 +91,7 @@ namespace Tilia.Tests
                 yield return 0.1;
             }
 
-            Assert.IsNotNull(UserID);
+            Assert.IsNotNull(UserID, "User ID not found during user registration.");
             yield return null;
         }
 
@@ -100,7 +100,7 @@ namespace Tilia.Tests
         {
             if (string.IsNullOrEmpty(UserID))
             {
-                Assert.IsNotNull(UserID);
+                Assert.IsNotNull(UserID, "User ID missing.");
                 yield return null;
             }
 
@@ -126,7 +126,7 @@ namespace Tilia.Tests
                 yield return 0.1;
             }
 
-            Assert.IsNotNull(state);
+            Assert.IsNotNull(state, "KYC state not found.");
 
             yield return null;
         }
@@ -136,7 +136,7 @@ namespace Tilia.Tests
         {
             if (string.IsNullOrEmpty(UserID))
             {
-                Assert.IsNotNull(UserID);
+                Assert.IsNotNull(UserID, "User ID missing.");
                 yield return null;
             }
 
@@ -162,7 +162,7 @@ namespace Tilia.Tests
                 yield return 0.1;
             }
 
-            Assert.IsNotNull(id);
+            Assert.IsNotNull(id, "No user info returned.");
 
             yield return null;
         }
@@ -172,9 +172,12 @@ namespace Tilia.Tests
         {
             if (string.IsNullOrEmpty(UserID))
             {
-                Assert.IsNotNull(UserID);
+                Assert.IsNotNull(UserID, "User ID missing.");
                 yield return null;
             }
+
+            // User wallet is created asynchronously, so may not be IMMEDIATELY available. Let's take a breath.
+            yield return 5f;
 
             bool finished = false;
             var startTime = Time.time;
@@ -198,7 +201,7 @@ namespace Tilia.Tests
                 yield return 0.1;
             }
 
-            Assert.IsTrue(finished);
+            Assert.IsTrue(finished, "Timed out waiting for payment methods.");
 
             yield return null;
         }
@@ -208,12 +211,12 @@ namespace Tilia.Tests
         {
             if (string.IsNullOrEmpty(UserID))
             {
-                Assert.IsNotNull(UserID);
+                Assert.IsNotNull(UserID, "User ID missing.");
                 yield return null;
             }
             else if (string.IsNullOrEmpty(PaymentID))
             {
-                Assert.IsNotNull(PaymentID);
+                Assert.IsNotNull(PaymentID, "Payment ID missing.");
                 yield return null;
             }
 
@@ -263,7 +266,7 @@ namespace Tilia.Tests
                 yield return 0.1;
             }
 
-            Assert.IsNotNull(InvoiceID);
+            Assert.IsNotNull(InvoiceID, "Invoice not created.");
 
             yield return null;
         }
@@ -273,12 +276,12 @@ namespace Tilia.Tests
         {
             if (string.IsNullOrEmpty(UserID))
             {
-                Assert.IsNotNull(UserID);
+                Assert.IsNotNull(UserID, "User ID missing.");
                 yield return null;
             }
             else if (string.IsNullOrEmpty(InvoiceID))
             {
-                Assert.IsNotNull(InvoiceID);
+                Assert.IsNotNull(InvoiceID, "Invoice ID missing.");
                 yield return null;
             }
 
@@ -300,7 +303,7 @@ namespace Tilia.Tests
                 yield return 0.1;
             }
 
-            Assert.IsTrue(finished);
+            Assert.IsTrue(finished, "Timed out while paying invoice.");
 
             yield return null;
         }
@@ -310,7 +313,7 @@ namespace Tilia.Tests
         {
             if (string.IsNullOrEmpty(UserID))
             {
-                Assert.IsNotNull(UserID);
+                Assert.IsNotNull(UserID, "User ID missing.");
                 yield return null;
             }
 
@@ -336,7 +339,7 @@ namespace Tilia.Tests
                 yield return 0.1;
             }
 
-            Assert.IsNotNull(redirect);
+            Assert.IsNotNull(redirect, "Failed to get client redirect URL.");
 
             yield return null;
         }
@@ -346,12 +349,12 @@ namespace Tilia.Tests
         {
             if (string.IsNullOrEmpty(UserID))
             {
-                Assert.IsNotNull(UserID);
+                Assert.IsNotNull(UserID, "User ID missing.");
                 yield return null;
             }
             else if (string.IsNullOrEmpty(PaymentID))
             {
-                Assert.IsNotNull(PaymentID);
+                Assert.IsNotNull(PaymentID, "Payment ID missing.");
                 yield return null;
             }
 
@@ -401,7 +404,7 @@ namespace Tilia.Tests
                 yield return 0.1;
             }
 
-            Assert.IsNotNull(EscrowID);
+            Assert.IsNotNull(EscrowID, "Failed to create escrow.");
 
             yield return null;
         }
@@ -411,12 +414,12 @@ namespace Tilia.Tests
         {
             if (string.IsNullOrEmpty(UserID))
             {
-                Assert.IsNotNull(UserID);
+                Assert.IsNotNull(UserID, "User ID missing.");
                 yield return null;
             }
             else if (string.IsNullOrEmpty(EscrowID))
             {
-                Assert.IsNotNull(EscrowID);
+                Assert.IsNotNull(EscrowID, "Escrow ID missing.");
                 yield return null;
             }
 
@@ -438,7 +441,7 @@ namespace Tilia.Tests
                 yield return 0.1;
             }
 
-            Assert.IsTrue(finished);
+            Assert.IsTrue(finished, "Timed out while paying escrow.");
 
             yield return null;
         }
@@ -448,12 +451,12 @@ namespace Tilia.Tests
         {
             if (string.IsNullOrEmpty(UserID))
             {
-                Assert.IsNotNull(UserID);
+                Assert.IsNotNull(UserID, "User ID missing.");
                 yield return null;
             }
             else if (string.IsNullOrEmpty(EscrowID))
             {
-                Assert.IsNotNull(EscrowID);
+                Assert.IsNotNull(EscrowID, "Escrow ID missing.");
                 yield return null;
             }
 
@@ -475,7 +478,7 @@ namespace Tilia.Tests
                 yield return 0.1;
             }
 
-            Assert.IsTrue(finished);
+            Assert.IsTrue(finished, "Timed out while committing escrow.");
 
             yield return null;
         }
