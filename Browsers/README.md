@@ -8,7 +8,8 @@ The Tilia SDK currently supports two web browser options (see below).
 
 This is a basic open-source Chromium web browser available for free under the GNU GPL 3.0. License details can be found at https://github.com/tunerok/unity_browser/blob/master/LICENSE.
 
-This browser option currently only supports standalone Windows projects.
+ - This browser option currently only supports standalone Windows projects.
+ - IL2CPP support: Simple Web Browser currently only supports the Mono scripting backend. If your project requires IL2CPP support, please use another browser option. This is because Unity has not implemented managed process control in the IL2CPP engine yet.
 
 Simple Web Browser Repo: https://github.com/tunerok/unity_browser
 
@@ -20,7 +21,8 @@ Simple Web Browser is not affiliated with Tilia in any way.
 
 The Embedded Web Browser by Zen Fulcrum LLC is supported by the Tilia Unity SDK. To use this popular browser option you will need to purchase it separately from the Unity Asset Store and import it into your project.
 
-This browser currently supports standalone MacOS, Windows, and Linux (Experimental) projects.
+ - This browser currently supports standalone MacOS, Windows, and Linux (Experimental) projects.
+ - IL2CPP support: This browser currently supports IL2CPP on Windows 64-bit and Mac 64-bit. Mono is supported on all standalone platforms.
 
 Embedded Web Browser: https://assetstore.unity.com/packages/tools/gui/embedded-browser-55459
 

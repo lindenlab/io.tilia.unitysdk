@@ -87,6 +87,23 @@ namespace Tilia
             var lineItems = new JArray();
             foreach (var line in LineItems)
             {
+                var recipients = new JArray();
+                if (line.Recipients != null && line.Recipients.Count > 0)
+                {
+                    foreach (var recipient in line.Recipients)
+                    {
+                        recipients.Add(new JObject(
+                            new JProperty("amount", recipient.Amount),
+                            new JProperty("description", recipient.Description),
+                            new JProperty("metadata", recipient.MetaData),
+                            new JProperty("source_wallet_id", recipient.SourceWalletID),
+                            new JProperty("destination_wallet_id", recipient.DestinationWalletID),
+                            new JProperty("integrator_revenue", recipient.IntegratorRevenue),
+                            new JProperty("reference_type", recipient.ReferenceType),
+                            new JProperty("reference_id", recipient.ReferenceID)
+                        ));
+                    }
+                }
                 lineItems.Add(new JObject(
                     new JProperty("amount", line.Amount),
                     new JProperty("currency", line.Currency),
@@ -95,7 +112,8 @@ namespace Tilia
                     new JProperty("product_sku", line.ProductSKU),
                     new JProperty("transaction_type", line.TransactionType),
                     new JProperty("reference_type", line.ReferenceType),
-                    new JProperty("reference_id", line.ReferenceID)
+                    new JProperty("reference_id", line.ReferenceID),
+                    new JProperty("recipients", recipients)
                 ));
             }
             var jsonData = new JObject(

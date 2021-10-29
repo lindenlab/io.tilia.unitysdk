@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.9.8] - 2021-10-29
+### Changed
+ - Updated Browsers/README.md with IL2CPP compatibility information.
+ - Updated Browsers/README.md with additional setup instructions for ZFBrowser (adding assembly ref to TiliaSDK)
+ - Fixed an exception that could occur if the third-party SimpleWebBrowser was on a Screen Overlay canvas instead of a Screen Camera canvas.
+
+### Added
+ - Added TiliaRecipient class. This is solely used to specify recipients of a user-to-user invoice during invoice creation. Recipients get added to TiliaLineItem objects on invoices.
+
 ## [0.9.7] - 2021-10-21
 ### Changed
  - Dependency on local HTML file removed for web widget. Now opens directly to Tilia.IO website for widget. This fixes the KYC widget flow failing to load properly.

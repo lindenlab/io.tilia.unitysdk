@@ -177,7 +177,7 @@ namespace Tilia.Tests
             }
 
             // User wallet is created asynchronously, so may not be IMMEDIATELY available. Let's take a breath.
-            yield return 5f;
+            yield return new WaitForSeconds(3f);
 
             bool finished = false;
             var startTime = Time.time;

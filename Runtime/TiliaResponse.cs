@@ -156,7 +156,7 @@ namespace Tilia
         public string Description;
         public string MetaData;
 
-        public List<TiliaSubItem> SubItems;
+        public List<TiliaSubItem> SubItems = new List<TiliaSubItem>();
 
         public TiliaInvoiceSummary Summary;
         public struct TiliaInvoiceSummary
@@ -185,7 +185,7 @@ namespace Tilia
             public int AuthorizedAmount;
             public string DisplayAmount;
 
-            public List<TiliaSubItem> SubItems;
+            public List<TiliaSubItem> SubItems = new List<TiliaSubItem>();
 
             public TiliaPaymentMethod()
             {
@@ -329,7 +329,9 @@ namespace Tilia
         public string Description;
         public string MetaData;
 
-        public List<TiliaSubItem> SubItems;
+        public List<TiliaSubItem> SubItems = new List<TiliaSubItem>();
+
+        public List<TiliaRecipient> Recipients = new List<TiliaRecipient>();
 
         public TiliaLineItem()
         {
@@ -364,6 +366,58 @@ namespace Tilia
                 {
                     SubItems.Add(new TiliaSubItem(item.Value));
                 }
+            }
+
+            if (!TiliaPay.TokenIsNull(import["recipients"]))
+            {
+                Recipients = new List<TiliaRecipient>();
+                foreach (JProperty item in import["recipients"])
+                {
+                    Recipients.Add(new TiliaRecipient(item.Value));
+                }
+            }
+        }
+    }
+
+    [Serializable]
+    public class TiliaRecipient
+    {
+        public int Amount;
+        public bool IntegratorRevenue;
+        public string ReferenceType;
+        public string ReferenceID;
+        public string Description;
+        public string MetaData;
+        public string SourceWalletID;
+        public string DestinationWalletID;
+
+        public TiliaRecipient()
+        {
+            // Nothing special here. Just has to be defined.
+        }
+
+        public TiliaRecipient(JToken import)
+        {
+            Import(import);
+        }
+
+        public void Import(JToken import)
+        {
+            ReferenceType = TiliaPay.StringOrNull(import["reference_type"]);
+            ReferenceID = TiliaPay.StringOrNull(import["reference_id"]);
+            Description = TiliaPay.StringOrNull(import["description"]);
+            MetaData = TiliaPay.StringOrNull(import["metadata"]);
+            SourceWalletID = TiliaPay.StringOrNull(import["source_wallet_id"]);
+            DestinationWalletID = TiliaPay.StringOrNull(import["destination_wallet_id"]);
+
+            if (!TiliaPay.TokenIsNull(import["integrator_revenue"]))
+            {
+                IntegratorRevenue = import["integrator_revenue"].ToObject<bool>();
+            }
+
+            if (!TiliaPay.TokenIsNull(import["amount"]))
+            {
+                Amount = import["amount"].Value<int>();
             }
         }
     }
