@@ -11,7 +11,7 @@ namespace Tilia
 {
     public class TiliaPay : MonoBehaviour
     {
-        public static readonly string Version = "0.9.8";
+        public static readonly string Version = "1.0.0";
 
         [Header("Environment")]
         [Tooltip("Decides whether to use the Staging Environment (for testing) or Production Environment (for deployment).")]

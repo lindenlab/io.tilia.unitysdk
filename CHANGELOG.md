@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2021-11-02
+### Changed
+ - Initial production release.
+
 ## [0.9.8] - 2021-10-29
 ### Changed
  - Updated Browsers/README.md with IL2CPP compatibility information.
