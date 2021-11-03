@@ -383,6 +383,7 @@ namespace Tilia
     public class TiliaRecipient
     {
         public int Amount;
+        public string Currency = "USD";
         public bool IntegratorRevenue;
         public string ReferenceType;
         public string ReferenceID;
@@ -403,6 +404,7 @@ namespace Tilia
 
         public void Import(JToken import)
         {
+            Currency = TiliaPay.StringOrNull(import["currency"]);
             ReferenceType = TiliaPay.StringOrNull(import["reference_type"]);
             ReferenceID = TiliaPay.StringOrNull(import["reference_id"]);
             Description = TiliaPay.StringOrNull(import["description"]);

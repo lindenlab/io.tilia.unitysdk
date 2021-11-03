@@ -96,6 +96,7 @@ namespace Tilia
                             new JProperty("amount", recipient.Amount),
                             new JProperty("description", recipient.Description),
                             new JProperty("metadata", recipient.MetaData),
+                            new JProperty("currency", recipient.Currency),
                             new JProperty("source_wallet_id", recipient.SourceWalletID),
                             new JProperty("destination_wallet_id", recipient.DestinationWalletID),
                             new JProperty("integrator_revenue", recipient.IntegratorRevenue),
