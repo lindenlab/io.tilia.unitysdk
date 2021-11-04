@@ -11,27 +11,29 @@ namespace Tilia
 {
     public class TiliaPay : MonoBehaviour
     {
-        public static readonly string Version = "1.0.0";
+        public static readonly string Version = "1.0.1";
 
         [Header("Environment")]
         [Tooltip("Decides whether to use the Staging Environment (for testing) or Production Environment (for deployment).")]
         public bool StagingEnvironment = true;
 
-        [Header("Production (Credentials Required)")]
+        [Header("Production Credentials (Required)")]
         [Tooltip("Your unique PRODUCTION integrator ID given to you by Tilia. Contact Tilia for support if you do not have this.")]
         public string ProductionClientID;
         [Tooltip("Your unique PRODUCTION integrator secret given to you by Tilia. Contact Tilia for support if you do not have this.")]
         public string ProductionClientSecret;
+        [Header("Production Configuration")]
         [Tooltip("API server to use when running in a production environment. (Default should be fine.)")]
         public string ProductionURI = "tilia-inc.com";
         [Tooltip("URL of the widget used for production environment. Defaults to Tilia.IO, but you could make your own if you want.")]
         public string ProductionWidgetURL = "https://web.tilia-inc.com/ui/unity-sdk-integrator-v1.html";
 
-        [Header("Staging (Credentials Required)")]
+        [Header("Staging Credentials (Required)")]
         [Tooltip("Your unique STAGING integrator ID given to you by Tilia. Contact Tilia for support if you do not have this.")]
         public string StagingClientID;
         [Tooltip("Your unique STAGING integrator secret given to you by Tilia. Contact Tilia for support if you do not have this.")]
         public string StagingClientSecret;
+        [Header("Staging Configuration")]
         [Tooltip("API server to use when testing in a staging environment. (Default should be fine.)")]
         public string StagingURI = "staging.tilia-inc.com";
         [Tooltip("URL of the widget used for staging environment. Defaults to Tilia.IO, but you could make your own if you want.")]
@@ -673,6 +675,8 @@ namespace Tilia
                 else if (method == UnityWebRequest.kHttpVerbDELETE)
                 {
                     webRequest = UnityWebRequest.Delete(requestURI);
+                    // Delete doesn't attach a download handler by default.
+                    webRequest.downloadHandler = new DownloadHandlerBuffer();
                 }
                 else if (method == UnityWebRequest.kHttpVerbPUT)
                 {

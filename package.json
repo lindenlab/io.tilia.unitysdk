@@ -1,6 +1,6 @@
 {
   "name": "io.tilia.unitysdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "TiliaPay SDK",
   "description": "This is the official Unity SDK for TiliaPay (Tilia.io).",
   "unity": "2018.4",

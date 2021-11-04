@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2021-11-04
+### Changed
+ - Added special handling for HTTP DELETE events which lack a response body by default.
+ - Fixed some typos in README.md and Getting Started.md.
+
+### Added
+ - Custom Inspector UI added for TiliaPay component.
+ - Added API Response panel that shows JSON-formatted API paylods in Sample Demo scenes for validation.
+
 ## [1.0.0] - 2021-11-02
 ### Changed
  - Initial production release.

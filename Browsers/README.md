@@ -28,8 +28,8 @@ Embedded Web Browser: https://assetstore.unity.com/packages/tools/gui/embedded-b
 
 If you have Zen Fulcrum (ZFBrowser) in your project, you should install the Tilia/Browsers/TiliaBrowserZF.unitypackage package file.
 
-After importing Zen Fulcrum and the TiliaBrowserZF package, you will need add the ZFBrowser assembly definition as a reference to the Tilia assembly definition.
- - Select the Tilia.asmdef file in the Tilia folder.
+After importing Zen Fulcrum and the TiliaBrowserZF package, you will need to add the ZFBrowser assembly definition as a reference to the Tilia assembly definition.
+ - Select the TiliaSDK.asmdef file in the Tilia folder.
  - Add a new Assembly Definition Reference
  - Select ZFBrowser for the new reference.
  - Hit Apply at the bottom of the inspector window.

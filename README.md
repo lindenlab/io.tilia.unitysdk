@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is an implemention of the TiliaPay open API in Unity.
+This is an implementation of the TiliaPay open API in Unity.
 
 See https://www.tilia.io/docs/api-intro/ for details on the API available from Tilia.io.
 

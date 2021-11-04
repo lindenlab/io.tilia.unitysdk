@@ -32,8 +32,12 @@ public class TiliaTest : MonoBehaviour
     public InputField PayoutAccount;
     public InputField PayoutStatusID;
 
+    public GameObject ResponsePanel;
+    public InputField ResponseText;
+
     public void Awake()
     {
+        ResponsePanel.SetActive(false);
         if (TiliaPaySDK == null || !TiliaPaySDK.gameObject.activeInHierarchy)
         {
             // Don't include in active
@@ -48,6 +52,18 @@ public class TiliaTest : MonoBehaviour
                 Debug.Log("We found an active TiliaPay component on " + TiliaPaySDK.gameObject.name + ".");
             }
         }
+    }
+
+    public void DisplayAPIResponse(TiliaResponse response)
+    {
+        ResponseText.text = JsonConvert.SerializeObject(response, Formatting.Indented);
+        ResponsePanel.SetActive(true);
+    }
+
+    public void DisplayWidgetResponse(TiliaWidgetResponse response)
+    {
+        ResponseText.text = JsonConvert.SerializeObject(response, Formatting.Indented);
+        ResponsePanel.SetActive(true);
     }
 
     public void CreatePayout()
@@ -76,6 +92,7 @@ public class TiliaTest : MonoBehaviour
                 {
                     Debug.Log("Something went wrong creating the payout.");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -94,12 +111,12 @@ public class TiliaTest : MonoBehaviour
                 if (value.Success)
                 {
                     Debug.Log("Payout found.");
-                    Debug.Log(JsonConvert.SerializeObject(value, Formatting.Indented));
                 }
                 else
                 {
                     Debug.Log("Something went wrong getting the payout.");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -112,12 +129,12 @@ public class TiliaTest : MonoBehaviour
                 if (value.Success)
                 {
                     Debug.Log("Payout retrieved.");
-                    Debug.Log(JsonConvert.SerializeObject(value, Formatting.Indented));
                 }
                 else
                 {
                     Debug.Log("Something went wrong getting all payouts.");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -131,12 +148,12 @@ public class TiliaTest : MonoBehaviour
                 if (value.Success)
                 {
                     Debug.Log("Payout canceled.");
-                    Debug.Log(JsonConvert.SerializeObject(value, Formatting.Indented));
                 }
                 else
                 {
                     Debug.Log("Something went wrong canceling the payout.");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -181,6 +198,7 @@ public class TiliaTest : MonoBehaviour
                 {
                     Debug.Log("Something went wrong creating the invoice.");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -198,6 +216,7 @@ public class TiliaTest : MonoBehaviour
                 {
                     Debug.Log("Something went wrong paying the invoice.");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -216,6 +235,7 @@ public class TiliaTest : MonoBehaviour
                 {
                     Debug.Log("Something went wrong getting the invoice.");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -261,6 +281,7 @@ public class TiliaTest : MonoBehaviour
                 {
                     Debug.Log("Something went wrong creating the escrow.");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -278,6 +299,7 @@ public class TiliaTest : MonoBehaviour
                 {
                     Debug.Log("Something went wrong paying the escrow.");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -295,6 +317,7 @@ public class TiliaTest : MonoBehaviour
                 {
                     Debug.Log("Something went wrong comitting the escrow.");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -312,6 +335,7 @@ public class TiliaTest : MonoBehaviour
                 {
                     Debug.Log("Something went wrong canceling the escrow.");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -324,12 +348,12 @@ public class TiliaTest : MonoBehaviour
                 if (value.Success)
                 {
                     Debug.Log("Escrow found.");
-                    Debug.Log(JsonConvert.SerializeObject(value, Formatting.Indented));
                 }
                 else
                 {
                     Debug.Log("Something went wrong getting the escrow.");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -362,6 +386,7 @@ public class TiliaTest : MonoBehaviour
                 {
                     Debug.Log("Something went wrong registering user " + userName + ".");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -381,6 +406,7 @@ public class TiliaTest : MonoBehaviour
                 {
                     Debug.Log("Something went wrong searching for " + account + ".");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -399,6 +425,7 @@ public class TiliaTest : MonoBehaviour
                 {
                     Debug.Log("Something went wrong checking KYC for " + account + ".");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -412,12 +439,12 @@ public class TiliaTest : MonoBehaviour
                 if (value.Success)
                 {
                     Debug.Log("Got payment methods:");
-                    Debug.Log(JsonConvert.SerializeObject(value));
                 }
                 else
                 {
                     Debug.Log("Something went wrong getting payment methods for " + account + ".");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -437,6 +464,7 @@ public class TiliaTest : MonoBehaviour
                 {
                     Debug.Log("Something went wrong searching for " + account + ".");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -455,6 +483,7 @@ public class TiliaTest : MonoBehaviour
                 {
                     Debug.Log("Something went wrong redirecting user " + account + ".");
                 }
+                DisplayAPIResponse(value);
             });
     }
 
@@ -465,12 +494,14 @@ public class TiliaTest : MonoBehaviour
         TiliaPaySDK.RequestClientRedirectURL(account, new string[] { "user_info", "read_payment_method", "write_payment_method", "read_kyc", "verify_kyc" },
             (value) =>
             {
+                DisplayAPIResponse(value);
                 if (value.Success)
                 {
                     Debug.Log("Attempting to start KYC widget with redirect: " + value.Redirect);
                     TiliaPaySDK.InitiateKYCWidget(value.Redirect,
                         (widget) =>
                         {
+                            DisplayWidgetResponse(widget);
                             if (widget.Completed)
                             {
                                 Debug.Log("KYC process completed: " + widget.Result);
@@ -495,12 +526,14 @@ public class TiliaTest : MonoBehaviour
         TiliaPaySDK.RequestClientRedirectURL(account, new string[] { "user_info", "read_payment_method", "write_payment_method", "read_kyc", "verify_kyc" },
             (value) =>
             {
+                DisplayAPIResponse(value);
                 if (value.Success)
                 {
                     Debug.Log("Attempting to start KYC widget with redirect: " + value.Redirect);
                     TiliaPaySDK.InitiateTOSWidget(value.Redirect,
                         (widget) =>
                         {
+                            DisplayWidgetResponse(widget);
                             if (widget.Completed)
                             {
                                 Debug.Log("TOS process completed.");
@@ -525,12 +558,14 @@ public class TiliaTest : MonoBehaviour
         TiliaPaySDK.RequestClientRedirectURL(account, new string[] { "user_info", "read_payment_method", "write_payment_method", "read_kyc", "verify_kyc" },
             (value) =>
             {
+                DisplayAPIResponse(value);
                 if (value.Success)
                 {
                     Debug.Log("Attempting to start payment widget with redirect: " + value.Redirect);
                     TiliaPaySDK.InitiatePurchaseWidget(value.Redirect,
                         (widget) =>
                         {
+                            DisplayWidgetResponse(widget);
                             if (widget.Completed)
                             {
                                 PurchasePSP.text = widget.ID;
@@ -556,12 +591,14 @@ public class TiliaTest : MonoBehaviour
         TiliaPaySDK.RequestClientRedirectURL(account, new string[] { "user_info", "read_payment_method", "write_payment_method", "read_kyc", "verify_kyc" },
             (value) =>
             {
+                DisplayAPIResponse(value);
                 if (value.Success)
                 {
                     Debug.Log("Attempting to start KYC widget with redirect: " + value.Redirect);
                     TiliaPaySDK.InitiatePayoutWidget(value.Redirect,
                         (widget) =>
                         {
+                            DisplayWidgetResponse(widget);
                             if (widget.Completed)
                             {
                                 PurchasePSP.text = widget.ID;
