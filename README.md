@@ -14,6 +14,6 @@ See the Documentation folder for details on how to use this SDK in Unity.
 
 ## Contact Information
 
-If you have questions about this SDK, please send email to unitySDK@tilia.io.
+If you have questions about this SDK, please send email to unity@tilia.io.
 
 If you encounter bugs or other issues with this SDK, please submit a github issue.
