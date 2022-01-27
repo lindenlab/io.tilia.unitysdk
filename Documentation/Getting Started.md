@@ -4,7 +4,7 @@
 
 To get started using the Tilia SDK, you will need to request a Client ID and Client Secret from Tilia which will give you access to the sandbox (staging) environment.
 
-To request credentials and kick off the process to access production, please send an email to <unitySDK@tilia.io> with the information listed below:
+To request credentials and kick off the process to access production, please send an email to <unity@tilia.io> with the information listed below:
 * Contact name:
 * Contact phone:
 * Contact email address:
